@@ -1,5 +1,5 @@
 {
   "require": {
-    "mrdeff/bitrix24-api": "^1.0"
+    "x3group-dev/bitrix24-api": "^1.0"
   }
 }

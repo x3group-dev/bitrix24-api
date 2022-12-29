@@ -3,7 +3,7 @@
 Установка
 
 ``
-composer require mrdeff/bitrix24-api
+composer require x3group-dev/bitrix24-api
 ``
 
 Пример вызова
