@@ -1,0 +1,5 @@
+{
+  "require": {
+    "mrdeff/bitrix24-api": "^1.0"
+  }
+}
