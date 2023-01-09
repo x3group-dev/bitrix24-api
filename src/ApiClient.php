@@ -6,6 +6,7 @@ namespace Bitrix24Api;
 use Bitrix24Api\Batch\Batch;
 use Bitrix24Api\Batch\Command;
 use Bitrix24Api\Config\Config;
+use Bitrix24Api\EntitiesServices\Bizproc\Robot;
 use Bitrix24Api\EntitiesServices\CRM\Activity;
 use Bitrix24Api\EntitiesServices\CRM\ActivityCommunication;
 use Bitrix24Api\EntitiesServices\CRM\ActivityType;
@@ -94,7 +95,7 @@ class ApiClient
             );
 
             $start = $params['start'] ?? 0;
-            if (!is_null($this->config->getLogger)) {
+            if (!is_null($this->config->getLogger())) {
                 $this->config->getLogger()->debug(
                     "По запросу (getList) {$method} (start: {$start}) получено сущностей: " . count($result->getResponseData()->getResult()->getResultData()) .
                     ", всего существует: " . $result->getResponseData()->getPagination()->getTotal(),
@@ -537,5 +538,10 @@ class ApiClient
     public function user(array $params = []): User
     {
         return new User($this, $params);
+    }
+
+    public function bizprocRobot(array $params = []): Robot
+    {
+        return new Robot($this, $params);
     }
 }
