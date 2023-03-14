@@ -2,11 +2,15 @@
 
 namespace Bitrix24Api\EntitiesServices;
 
+use Bitrix24Api\EntitiesServices\Traits\Base\GetListFastTrait;
+use Bitrix24Api\EntitiesServices\Traits\Base\GetListTrait;
 use Bitrix24Api\Models\AbstractModel;
 use Bitrix24Api\Models\User\UserModel;
 
 class User extends BaseEntity
 {
+    use GetListTrait, GetListFastTrait;
+
     protected string $method = 'user.%s';
     public const ITEM_CLASS = UserModel::class;
     protected string $resultKey = '';

@@ -8,6 +8,7 @@ use Bitrix24Api\EntitiesServices\Traits\GetWithoutParamsTrait;
 use Bitrix24Api\Exceptions\ApiException;
 use Bitrix24Api\Exceptions\Entity\AlredyExists;
 use Bitrix24Api\Models\Lists\ListFieldModel;
+use Illuminate\Support\Facades\Log;
 
 class ListsField extends BaseEntity
 {
@@ -100,7 +101,6 @@ class ListsField extends BaseEntity
             $response = $this->api->request(sprintf($this->getMethod(), 'get'), $params);
             $result = [];
             foreach ($response->getResponseData()->getResult()->getResultData() as $field) {
-
                 if (isset($field['CODE']))
                     $result[$field['CODE']] = $field['FIELD_ID'];
                 else {

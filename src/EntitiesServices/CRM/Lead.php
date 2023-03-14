@@ -5,12 +5,14 @@ namespace Bitrix24Api\EntitiesServices\CRM;
 use Bitrix24Api\EntitiesServices\BaseEntity;
 use Bitrix24Api\EntitiesServices\Traits\Base\DeleteTrait;
 use Bitrix24Api\EntitiesServices\Traits\Base\FieldsTrait;
+use Bitrix24Api\EntitiesServices\Traits\Base\GetListFastTrait;
+use Bitrix24Api\EntitiesServices\Traits\Base\GetListTrait;
 use Bitrix24Api\EntitiesServices\Traits\Base\GetTrait;
 use Bitrix24Api\Models\CRM\LeadModel;
 
 class Lead extends BaseEntity
 {
-    use GetTrait, DeleteTrait, FieldsTrait;
+    use GetListTrait, GetListFastTrait, GetTrait, DeleteTrait, FieldsTrait;
 
     protected string $method = 'crm.lead.%s';
     public const ITEM_CLASS = LeadModel::class;

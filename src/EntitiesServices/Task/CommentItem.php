@@ -4,12 +4,16 @@ namespace Bitrix24Api\EntitiesServices\Task;
 
 use Bitrix24Api\ApiClient;
 use Bitrix24Api\EntitiesServices\BaseEntity;
+use Bitrix24Api\EntitiesServices\Traits\Base\GetListFastTrait;
+use Bitrix24Api\EntitiesServices\Traits\Base\GetListTrait;
 use Bitrix24Api\Exceptions\ApiException;
 use Bitrix24Api\Exceptions\InvalidArgumentException;
 use Bitrix24Api\Models\Task\CommentItemModel;
 
 class CommentItem extends BaseEntity
 {
+    use GetListTrait, GetListFastTrait;
+
     protected string $method = 'task.commentitem.%s';
     public const ITEM_CLASS = CommentItemModel::class;
     protected string $resultKey = '';

@@ -3,32 +3,16 @@
 namespace Bitrix24Api\EntitiesServices\Bizproc;
 
 use Bitrix24Api\EntitiesServices\BaseEntity;
+use Bitrix24Api\EntitiesServices\Traits\Base\GetListArrayTrait;
 use Bitrix24Api\Models\Bizproc\RobotModel;
 
 class Robot extends BaseEntity
 {
+    use GetListArrayTrait;
     protected string $method = 'bizproc.robot.%s';
     public const ITEM_CLASS = RobotModel::class;
     protected string $resultKey = '';
     protected string $listMethod = 'list';
-
-    public function getList(): array
-    {
-        $method = sprintf($this->getMethod(), $this->listMethod);
-        $result = $this->api->request(
-            $method,
-            []
-        );
-
-        $resultData = $result->getResponseData()->getResult()->getResultData() ?? [];
-
-        if (!is_null($this->api->getLogger())) {
-            $this->api->getLogger()->debug(
-                "По запросу (getList) {$method} (получено сущностей: " . count($resultData),
-            );
-        }
-        return $resultData;
-    }
 
     /**
      * @throws \Exception

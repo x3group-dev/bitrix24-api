@@ -3,25 +3,36 @@
 namespace Bitrix24Api\EntitiesServices\Lists;
 
 use Bitrix24Api\EntitiesServices\BaseEntity;
+use Bitrix24Api\EntitiesServices\Traits\Base\GetListFastTrait;
+use Bitrix24Api\EntitiesServices\Traits\Base\GetListTrait;
 use Bitrix24Api\Exceptions\ApiException;
-use Bitrix24Api\Exceptions\Entity\AlredyExists;
-use Bitrix24Api\Models\AbstractModel;
 use Bitrix24Api\Models\Lists\ElementModel;
+use Illuminate\Support\Facades\Log;
 
 class Element extends BaseEntity
 {
+    use GetListTrait, GetListFastTrait;
+
     protected string $method = 'lists.element.%s';
     public const ITEM_CLASS = ElementModel::class;
     protected string $resultKey = '';
     protected string $listMethod = 'get';
 
-    public function get(string $iblockTypeId, int $sonetGroupId = 0, $iblockCodeOrId, $id): ?ElementModel
+    public function get(string $iblockTypeId, int $sonetGroupId = 0, $iblockCodeOrId = null, int|string $id = null): ?ElementModel
     {
+        if (is_null($id))
+            return null;
+
         $params = [
             'IBLOCK_TYPE_ID' => $iblockTypeId,
             'SOCNET_GROUP_ID' => $sonetGroupId,
-            'ELEMENT_ID' => $id,
         ];
+
+        if (is_int($id)) {
+            $params['ELEMENT_ID'] = $id;
+        } else {
+            $params['ELEMENT_CODE'] = $id;
+        }
 
         if (is_int($iblockCodeOrId)) {
             $params['IBLOCK_ID'] = $iblockCodeOrId;
@@ -70,7 +81,6 @@ class Element extends BaseEntity
     {
         $params = [
             'IBLOCK_TYPE_ID' => $iblockTypeId,
-            'FIELDS' => $fields,
             'SOCNET_GROUP_ID' => $sonetGroupId
         ];
 
@@ -86,6 +96,12 @@ class Element extends BaseEntity
             $params['ELEMENT_CODE'] = $elementCodeOrId;
         }
 
+        $currentData = $this->get($iblockTypeId, $sonetGroupId, $iblockCodeOrId, $elementCodeOrId)->toArray();
+        self::clearCurrentData($currentData);
+
+        $updateFields = array_merge($currentData, $fields);
+        $params['FIELDS'] = $updateFields;
+
         try {
             $response = $this->api->request(sprintf($this->getMethod(), 'update'), $params);
             $result = $response->getResponseData()->getResult()->getResultData();
@@ -96,6 +112,27 @@ class Element extends BaseEntity
             }
         } catch (ApiException $e) {
             throw new \Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * Чистим системные поля перед апдейтом
+     * @param $data
+     * @return void
+     */
+    public static function clearCurrentData(&$data)
+    {
+        unset($data['ID']);
+        unset($data['IBLOCK_ID']);
+        unset($data['CREATED_BY']);
+        unset($data['BP_PUBLISHED']);
+        foreach ($data as $key => &$value) {
+            if (is_array($value)) {
+                $currentValue = current($value);
+                if (isset($currentValue['TEXT'])) {
+                    $value = $currentValue['TEXT'];
+                }
+            }
         }
     }
 }

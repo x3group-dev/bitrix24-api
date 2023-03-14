@@ -6,7 +6,7 @@ use Bitrix24Api\Exceptions\ApiException;
 
 trait UpdateTrait
 {
-    public function update(string $iblockTypeId, string $iblockCode, int $sonetGroupId = 0, string $fieldId, array $fields)
+    public function update(string $iblockTypeId, string $iblockCode, int $sonetGroupId = 0, string $fieldId = null, array $fields = [])
     {
         $params = [
             'IBLOCK_TYPE_ID' => $iblockTypeId,

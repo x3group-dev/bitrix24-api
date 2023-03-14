@@ -6,13 +6,15 @@ use Bitrix24Api\EntitiesServices\BaseEntity;
 use Bitrix24Api\EntitiesServices\Traits\Base\AddTrait;
 use Bitrix24Api\EntitiesServices\Traits\Base\DeleteTrait;
 use Bitrix24Api\EntitiesServices\Traits\Base\FieldsTrait;
+use Bitrix24Api\EntitiesServices\Traits\Base\GetListFastTrait;
+use Bitrix24Api\EntitiesServices\Traits\Base\GetListTrait;
 use Bitrix24Api\EntitiesServices\Traits\Base\GetTrait;
 use Bitrix24Api\EntitiesServices\Traits\Base\UpdateTrait;
 use Bitrix24Api\Models\CRM\CompanyModel;
 
 class Company extends BaseEntity
 {
-    use GetTrait, DeleteTrait, FieldsTrait;
+    use GetListTrait, GetListFastTrait, GetTrait, DeleteTrait, FieldsTrait;
 
     protected string $method = 'crm.company.%s';
     public const ITEM_CLASS = CompanyModel::class;

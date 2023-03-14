@@ -3,11 +3,14 @@
 namespace Bitrix24Api\EntitiesServices\Entity;
 
 use Bitrix24Api\EntitiesServices\BaseEntity;
+use Bitrix24Api\EntitiesServices\Traits\Base\GetListFastTrait;
+use Bitrix24Api\EntitiesServices\Traits\Base\GetListTrait;
 use Bitrix24Api\Exceptions\ApiException;
 use Bitrix24Api\Models\Entity\ItemModel;
 
 class Item extends BaseEntity
 {
+    use GetListTrait, GetListFastTrait;
     protected string $method = 'entity.item.%s';
     public const ITEM_CLASS = ItemModel::class;
     protected string $resultKey = '';

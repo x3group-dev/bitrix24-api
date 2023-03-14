@@ -7,7 +7,7 @@ trait GetTrait
     /**
      * @throws \Exception
      */
-    public function get($id): ?AbstractModel
+    public function get($id)
     {
         $class = static::ITEM_CLASS;
         try {

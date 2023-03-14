@@ -3,12 +3,15 @@
 namespace Bitrix24Api\EntitiesServices\Task;
 
 use Bitrix24Api\EntitiesServices\BaseEntity;
+use Bitrix24Api\EntitiesServices\Traits\Base\GetListFastTrait;
+use Bitrix24Api\EntitiesServices\Traits\Base\GetListTrait;
 use Bitrix24Api\Exceptions\ApiException;
-use Bitrix24Api\Models\AbstractModel;
 use Bitrix24Api\Models\Task\TaskModel;
 
 class Task extends BaseEntity
 {
+    use GetListTrait, GetListFastTrait;
+
     protected string $method = 'tasks.task.%s';
     public const ITEM_CLASS = TaskModel::class;
     protected string $resultKey = 'tasks';
@@ -71,5 +74,37 @@ class Task extends BaseEntity
         } catch (ApiException $e) {
 
         }
+    }
+
+    public function update($id, array $fields = [])
+    {
+        try {
+            $response = $this->api->request(sprintf($this->getMethod(), 'update'), ['taskId' => $id, 'fields' => $fields]);
+            $result = $response->getResponseData()->getResult()->getResultData();
+            if (current($result)) {
+                return current($result);
+            } else {
+                return false;
+            }
+        } catch (ApiException $e) {
+
+        }
+        return false;
+    }
+
+    public function getHistoryList(int $taskId, $order = [], array $filter = []): array
+    {
+        try {
+            $response = $this->api->request(sprintf($this->getMethod(), 'history.list'), ['taskId' => $taskId, 'filter' => $filter, 'order' => $order]);
+            $result = $response->getResponseData()->getResult()->getResultData();
+            if (current($result)) {
+                return current($result);
+            } else {
+                return [];
+            }
+        } catch (ApiException $e) {
+
+        }
+        return [];
     }
 }
