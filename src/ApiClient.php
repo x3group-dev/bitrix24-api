@@ -6,6 +6,7 @@ namespace Bitrix24Api;
 use Bitrix24Api\Batch\Batch;
 use Bitrix24Api\Batch\Command;
 use Bitrix24Api\Config\Config;
+use Bitrix24Api\EntitiesServices\AppOption;
 use Bitrix24Api\EntitiesServices\Bizproc\Robot;
 use Bitrix24Api\EntitiesServices\CRM\Activity;
 use Bitrix24Api\EntitiesServices\CRM\ActivityCommunication;
@@ -42,6 +43,7 @@ use Bitrix24Api\EntitiesServices\Task\CommentItem;
 use Bitrix24Api\EntitiesServices\Task\Stages;
 use Bitrix24Api\EntitiesServices\Task\Task;
 use Bitrix24Api\EntitiesServices\User;
+use Bitrix24Api\EntitiesServices\UserOption;
 use Bitrix24Api\Exceptions\ApiException;
 use Bitrix24Api\Exceptions\ExpiredRefreshToken;
 use Bitrix24Api\Exceptions\InvalidArgumentException;
@@ -543,5 +545,15 @@ class ApiClient
     public function bizprocRobot(array $params = []): Robot
     {
         return new Robot($this, $params);
+    }
+
+    public function option(): AppOption
+    {
+        return new AppOption($this);
+    }
+
+    public function userOption(): UserOption
+    {
+        return new UserOption($this);
     }
 }

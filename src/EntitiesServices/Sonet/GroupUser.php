@@ -15,12 +15,19 @@ class GroupUser extends BaseEntity
     protected string $resultKey = '';
     protected string $listMethod = 'get';
 
-    public function get(int $groupId): ?GroupUserModel
+    public function get(int $groupId): ?array
     {
         $params = [
             'ID' => $groupId,
         ];
         $response = $this->api->request(sprintf($this->getMethod(), 'get'), $params);
+
+        return !empty($response) ? $response->getResponseData()->getResult()->getResultData() : [];
+    }
+
+    public function groups(): ?GroupUserModel
+    {
+        $response = $this->api->request(sprintf($this->getMethod(), 'groups'), []);
 
         $class = static::ITEM_CLASS;
         $entity = new $class($response->getResponseData()->getResult()->getResultData());

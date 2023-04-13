@@ -17,6 +17,11 @@ class ItemModel extends AbstractModel implements HasIdInterface
         return $this->NAME;
     }
 
+    public function getDetailText(): ?string
+    {
+        return $this->DETAIL_TEXT;
+    }
+
     public function getId(): ?int
     {
         return $this->ID;
