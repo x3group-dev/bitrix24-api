@@ -53,6 +53,16 @@ class ElementModel extends AbstractModel implements HasIdInterface
         return $this->DATE_CREATE;
     }
 
+    public function getActiveFrom(): ?string
+    {
+        return $this->ACTIVE_FROM;
+    }
+
+    public function getActiveTo(): ?string
+    {
+        return $this->ACTIVE_TO;
+    }
+
     public function getTimestamp(): ?string
     {
         return $this->TIMESTAMP_X;

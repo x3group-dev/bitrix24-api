@@ -76,6 +76,11 @@ class ApiClient
         $this->httpClient = HttpClient::create(['http_version' => '2.0']);
     }
 
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
     /**
      * Устанавливаем callback, который будет вызван при обновлении Credential'а
      * @param callable $callback
