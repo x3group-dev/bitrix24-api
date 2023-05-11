@@ -42,6 +42,11 @@ class TaskModel extends AbstractModel implements HasIdInterface
         return (int)$this->createdBy;
     }
 
+    public function createdDate(): string
+    {
+        return (int)$this->createdDate;
+    }
+
     public function getDescription(): ?string
     {
         return $this->description;
@@ -70,6 +75,11 @@ class TaskModel extends AbstractModel implements HasIdInterface
     public function getDeadline(): ?string
     {
         return $this->deadline;
+    }
+
+    public function getClosedDate(): ?string
+    {
+        return $this->closedDate;
     }
 
     public function getStartDatePlan(): ?string

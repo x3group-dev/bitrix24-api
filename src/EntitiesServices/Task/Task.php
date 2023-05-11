@@ -3,6 +3,7 @@
 namespace Bitrix24Api\EntitiesServices\Task;
 
 use Bitrix24Api\EntitiesServices\BaseEntity;
+use Bitrix24Api\EntitiesServices\Task\Exceptions\TaskActionNotAllowed;
 use Bitrix24Api\EntitiesServices\Traits\Base\GetListFastTrait;
 use Bitrix24Api\EntitiesServices\Traits\Base\GetListTrait;
 use Bitrix24Api\Exceptions\ApiException;
@@ -87,7 +88,9 @@ class Task extends BaseEntity
                 return false;
             }
         } catch (ApiException $e) {
-
+            if ($e->getCode() === 400) {
+                throw new TaskActionNotAllowed($e->getMessage(), $e->getCode(), $e);
+            }
         }
         return false;
     }

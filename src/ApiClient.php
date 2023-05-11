@@ -32,6 +32,7 @@ use Bitrix24Api\EntitiesServices\Entity\Entity;
 use Bitrix24Api\EntitiesServices\Entity\Item;
 use Bitrix24Api\EntitiesServices\Entity\ItemProperty;
 use Bitrix24Api\EntitiesServices\Entity\Section;
+use Bitrix24Api\EntitiesServices\Imbot\Message;
 use Bitrix24Api\EntitiesServices\Lists\Element as ListsElement;
 use Bitrix24Api\EntitiesServices\Lists\Lists;
 use Bitrix24Api\EntitiesServices\Lists\ListsField;
@@ -45,6 +46,7 @@ use Bitrix24Api\EntitiesServices\Task\Task;
 use Bitrix24Api\EntitiesServices\User;
 use Bitrix24Api\EntitiesServices\UserOption;
 use Bitrix24Api\Exceptions\ApiException;
+use Bitrix24Api\Exceptions\ApplicationNotInstalled;
 use Bitrix24Api\Exceptions\ExpiredRefreshToken;
 use Bitrix24Api\Exceptions\InvalidArgumentException;
 use Bitrix24Api\Exceptions\ServerInternalError;
@@ -144,6 +146,7 @@ class ApiClient
         ];
 
         $response = null;
+
         if (!is_null($this->config->getLogger())) {
             $this->config->getLogger()->debug(
                 sprintf('request.start %s', $method),
@@ -181,18 +184,24 @@ class ApiClient
                     if (isset($body['error'])) {
                         if ($body['error'] === 'ERROR_REQUIRED_PARAMETERS_MISSING') {
                             //todo: correct exception
-                            throw new ApiException($body['error'], 400, $body['error_description']);
+                            throw new ApiException((string)$body['error'], 400, $body['error_description']);
                         } else {
-                            throw new ApiException($body['error'], 400, $body['error_description']);
+                            throw new ApiException((string)$body['error'], 400, $body['error_description']);
                         }
                     }
                     break;
                 case 401:
                     $body = $request->toArray(false);
+
                     if ($body['error'] === 'expired_token') {
                         $this->getNewAccessToken();
                         $response = $this->request($method, $params);
                     }
+
+                    if($body['error'] === 'ERROR_OAUTH' && $body['error_description'] === 'Application not installed') {
+                        throw new ApplicationNotInstalled();
+                    }
+
                     break;
                 case 500:
                     throw new ServerInternalError('request: 500 internal error');
@@ -560,5 +569,10 @@ class ApiClient
     public function userOption(): UserOption
     {
         return new UserOption($this);
+    }
+
+    public function imBotMessage(): Message
+    {
+        return new Message($this);
     }
 }

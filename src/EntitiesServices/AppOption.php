@@ -6,9 +6,13 @@ class AppOption extends BaseEntity
 {
     protected string $method = 'app.option.%s';
 
-    public function get($option): array
+    public function get($option = null): array
     {
-        $response = $this->api->request(sprintf($this->getMethod(), 'get'), ['option' => $option]);
+        $params = [];
+        if(!is_null($option))
+            $params = ['option' => $option];
+
+        $response = $this->api->request(sprintf($this->getMethod(), 'get'), $params);
 
         return $response->getResponseData()->getResult()->getResultData();
     }
