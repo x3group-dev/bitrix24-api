@@ -15,6 +15,7 @@ use Bitrix24Api\EntitiesServices\CRM\Catalog;
 use Bitrix24Api\EntitiesServices\CRM\Category;
 use Bitrix24Api\EntitiesServices\CRM\Company;
 use Bitrix24Api\EntitiesServices\CRM\Contact;
+use Bitrix24Api\EntitiesServices\CRM\Deal;
 use Bitrix24Api\EntitiesServices\CRM\ItemProductRow;
 use Bitrix24Api\EntitiesServices\CRM\Lead;
 use Bitrix24Api\EntitiesServices\CRM\LeadProductRows;
@@ -400,6 +401,11 @@ class ApiClient
     public function crmLead(array $params = []): Lead
     {
         return new Lead($this, $params);
+    }
+
+    public function crmDeal(array $params = []): Deal
+    {
+        return new Deal($this, $params);
     }
 
     public function crmLeadProductRows(array $params = []): LeadProductRows
