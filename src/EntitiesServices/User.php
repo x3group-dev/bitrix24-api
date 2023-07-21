@@ -26,7 +26,7 @@ class User extends BaseEntity
         $response = $this->api->request(sprintf($this->getMethod(), 'get'), $params);
 
         $class = static::ITEM_CLASS;
-        $entity = new $class($response->getResponseData()->getResult()->getResultData());
+        $entity = new $class(current($response->getResponseData()->getResult()->getResultData()));
         return !empty($response) ? $entity : null;
     }
 }

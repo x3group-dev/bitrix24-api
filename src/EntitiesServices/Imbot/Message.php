@@ -8,7 +8,7 @@ class Message extends BaseEntity
 {
     protected string $method = 'imbot.message.%s';
 
-    public function add($dialogId, $message, $attach = '', $keyboard = '', $menu = '', bool $system = false, bool $urlPreview = true, $botId = null): ?array
+    public function add($dialogId, $message, $attach = [], $keyboard = '', $menu = '', bool $system = false, bool $urlPreview = true, $botId = null): ?array
     {
         $params = [
             'DIALOG_ID' => $dialogId,

@@ -10,7 +10,7 @@ class ProfileModel extends AbstractModel implements HasIdInterface
     protected int $id;
     protected int $admin;
     protected string $name;
-    protected string $lastName;
+    protected ?string $lastName;
     protected string $personalGender;
     protected string $personalPhoto;
     protected string $timeZone;
@@ -28,7 +28,7 @@ class ProfileModel extends AbstractModel implements HasIdInterface
         $model->setId($profile['ID'])
             ->setAdmin($profile['ADMIN'])
             ->setName($profile['NAME'])
-            ->setLastName($profile['LAST_NAME'])
+            ->setLastName($profile['LAST_NAME'] ?? '')
             ->setPersonalGender($profile['PERSONAL_GENDER'])
             ->setPersonalPhoto($profile['PERSONAL_PHOTO'] ?? '')
             ->setTimeZone($profile['TIME_ZONE'])
@@ -113,7 +113,7 @@ class ProfileModel extends AbstractModel implements HasIdInterface
     /**
      * @param string $lastName
      */
-    public function setLastName(string $lastName): self
+    public function setLastName(?string $lastName): self
     {
         $this->lastName = $lastName;
         return $this;

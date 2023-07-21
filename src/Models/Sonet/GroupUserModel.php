@@ -5,15 +5,20 @@ namespace Bitrix24Api\Models\Sonet;
 use Bitrix24Api\Models\AbstractModel;
 use Bitrix24Api\Models\Interfaces\HasIdInterface;
 
-class GroupUserModel extends AbstractModel implements HasIdInterface
+class GroupUserModel extends AbstractModel
 {
     public function toArray(): array
     {
         return $this->data;
     }
 
-    public function getId(): int
+    public function getUserId(): int
     {
-        return (int)$this->ID;
+        return (int)$this->USER_ID;
+    }
+
+    public function getRole(): string
+    {
+        return $this->ROLE;
     }
 }

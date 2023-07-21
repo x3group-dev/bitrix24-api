@@ -2,14 +2,11 @@
 
 namespace Bitrix24Api\Models\Lists\Element\Property;
 
-use Bitrix24Api\Models\AbstractModel;
-use Bitrix24Api\Models\Interfaces\HasIdInterface;
-
 class ValueModel
 {
-    protected array $data;
+    protected array|string $data;
 
-    public function __construct(array $data)
+    public function __construct(array|string $data)
     {
         $this->data = $data;
     }
@@ -21,7 +18,10 @@ class ValueModel
 
     public function getValue()
     {
-        return current($this->data);
+        if (is_array($this->data))
+            return current($this->data);
+        else
+            return $this->data;
     }
 
     public function getValueId()
