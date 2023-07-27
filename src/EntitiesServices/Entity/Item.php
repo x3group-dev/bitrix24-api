@@ -11,10 +11,32 @@ use Bitrix24Api\Models\Entity\ItemModel;
 class Item extends BaseEntity
 {
     use GetListTrait, GetListFastTrait;
+
     protected string $method = 'entity.item.%s';
     public const ITEM_CLASS = ItemModel::class;
     protected string $resultKey = '';
     protected string $listMethod = 'get';
+
+    public function get(int $id): ?ItemModel
+    {
+        if ($id === 0)
+            throw new \Exception('id 0');
+
+        $params = [
+            'FILTER' => [
+                'ID' => $id,
+            ],
+        ];
+
+        if (!empty($this->baseParams))
+            $params = array_merge($params, $this->baseParams);
+
+        $response = $this->api->request(sprintf($this->getMethod(), 'get'), $params);
+
+        $class = static::ITEM_CLASS;
+        $entity = new $class(current($response->getResponseData()->getResult()->getResultData()));
+        return !empty($response) ? $entity : null;
+    }
 
     public function add($params = [])
     {
