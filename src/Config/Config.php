@@ -22,14 +22,14 @@ class Config
         } else {
             $this->setWebHookUrl($url);
         }
-        if ($this->logger) {
-            $this->logger->debug(
-                'Api.init',
-                [
-                    'webhookMode' => $this->isWebHookMode(),
-                ]
-            );
-        }
+//        if ($this->logger) {
+//            $this->logger->debug(
+//                'Api.init',
+//                [
+//                    'webhookMode' => $this->isWebHookMode(),
+//                ]
+//            );
+//        }
     }
 
     /**
