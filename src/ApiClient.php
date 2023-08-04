@@ -46,6 +46,8 @@ use Bitrix24Api\EntitiesServices\Task\Stages;
 use Bitrix24Api\EntitiesServices\Task\Task;
 use Bitrix24Api\EntitiesServices\User;
 use Bitrix24Api\EntitiesServices\UserOption;
+use Bitrix24Api\EntitiesServices\Messageservice;
+use Bitrix24Api\EntitiesServices\Messageservice\Sender;
 use Bitrix24Api\Exceptions\ApiException;
 use Bitrix24Api\Exceptions\ApplicationNotInstalled;
 use Bitrix24Api\Exceptions\ExpiredRefreshToken;
@@ -580,5 +582,14 @@ class ApiClient
     public function imBotMessage(): Message
     {
         return new Message($this);
+    }
+
+    /*
+     * MessageService
+     */
+
+    public function sender(): Sender
+    {
+        return new Sender($this);
     }
 }
