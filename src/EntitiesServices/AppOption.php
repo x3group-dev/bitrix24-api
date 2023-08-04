@@ -19,7 +19,7 @@ class AppOption extends BaseEntity
 
     public function set($options): array
     {
-        $response = $this->api->request(sprintf($this->getMethod(), 'get'), ['options' => $options]);
+        $response = $this->api->request(sprintf($this->getMethod(), 'set'), ['options' => $options]);
 
         return $response->getResponseData()->getResult()->getResultData();
     }
