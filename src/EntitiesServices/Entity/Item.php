@@ -38,23 +38,6 @@ class Item extends BaseEntity
         return !empty($response) ? $entity : null;
     }
 
-    public function getAll(array $params): ?ItemModel
-    {
-        if (!empty($this->baseParams))
-            $params = array_merge($params, $this->baseParams);
-
-        $response = $this->api->request(sprintf($this->getMethod(), 'get'), $params);
-
-        $class = static::ITEM_CLASS;
-        
-        if ($response->getResponseData()->getResult()->getResultData() == null) {
-            return null;
-        }
-
-        $entity = new $class($response->getResponseData()->getResult()->getResultData());
-        return !empty($response) ? $entity : null;
-    }
-
     public function add($params = [])
     {
         if (!empty($this->baseParams))

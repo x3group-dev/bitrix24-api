@@ -588,7 +588,7 @@ class ApiClient
      * MessageService
      */
 
-    public function sender(): Sender
+    public function messageServiceSender(): Sender
     {
         return new Sender($this);
     }
