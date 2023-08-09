@@ -3,12 +3,16 @@
 namespace Bitrix24Api\EntitiesServices\Messageservice;
 
 use Bitrix24Api\EntitiesServices\BaseEntity;
+use Bitrix24Api\EntitiesServices\Traits\Base\GetListFastTrait;
+use Bitrix24Api\EntitiesServices\Traits\Base\GetListTrait;
 use Bitrix24Api\Exceptions\ApiException;
 use Bitrix24Api\Exceptions\Entity\AlredyExists;
 use Bitrix24Api\Models\Messageservice\SenderModel;
 
 class Sender extends BaseEntity
 {
+    use GetListTrait, GetListFastTrait;
+
     protected string $method = 'messageservice.sender.%s';
     public const ITEM_CLASS = SenderModel::class;
 
@@ -45,16 +49,6 @@ class Sender extends BaseEntity
         try {
             $this->api->request(sprintf($this->getMethod(), 'delete'), ['CODE' => $code]);
             return true;
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
-        }
-    }
-
-    public function list()
-    {
-        try {
-            $response = $this->api->request(sprintf($this->getMethod(), 'list'));
-            return new (static::ITEM_CLASS)($response->getResponseData()->getResult()->getResultData());
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
