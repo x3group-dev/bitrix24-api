@@ -598,7 +598,7 @@ class ApiClient
      * Bizproc Event
      */
 
-     public function bizproceEvent(array $params = []): Event
+     public function bizprocEvent(array $params = []): Event
     {
         return new Event($this, $params);
     }

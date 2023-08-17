@@ -17,7 +17,7 @@ class Item extends BaseEntity
     protected string $resultKey = '';
     protected string $listMethod = 'get';
 
-    public function get(int $id, array $fields = []): ?ItemModel
+    public function get(int $id): ?ItemModel
     {
         if ($id === 0)
             throw new \Exception('id 0');
@@ -27,8 +27,6 @@ class Item extends BaseEntity
                 'ID' => $id,
             ],
         ];
-
-        $params = array_merge($params, $fields);
 
         if (!empty($this->baseParams))
             $params = array_merge($params, $this->baseParams);
