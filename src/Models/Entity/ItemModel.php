@@ -4,6 +4,7 @@ namespace Bitrix24Api\Models\Entity;
 
 use Bitrix24Api\Models\AbstractModel;
 use Bitrix24Api\Models\Interfaces\HasIdInterface;
+use JetBrains\PhpStorm\Pure;
 
 class ItemModel extends AbstractModel implements HasIdInterface
 {
@@ -17,6 +18,12 @@ class ItemModel extends AbstractModel implements HasIdInterface
         return $this->NAME;
     }
 
+    public function getDateCreate(): \DateTime
+    {
+        return new \DateTime($this->DATE_CREATE);
+    }
+
+
     public function getDetailText(): ?string
     {
         return $this->DETAIL_TEXT;
@@ -25,5 +32,10 @@ class ItemModel extends AbstractModel implements HasIdInterface
     public function getId(): ?int
     {
         return $this->ID;
+    }
+
+    #[Pure] public function getProperty($property): mixed
+    {
+        return isset($this->data['PROPERTY_VALUES']) ? $this->data['PROPERTY_VALUES'][$property] : null;
     }
 }
