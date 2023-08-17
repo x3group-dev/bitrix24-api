@@ -7,6 +7,7 @@ use Bitrix24Api\Batch\Batch;
 use Bitrix24Api\Batch\Command;
 use Bitrix24Api\Config\Config;
 use Bitrix24Api\EntitiesServices\AppOption;
+use Bitrix24Api\EntitiesServices\Bizproc\Event;
 use Bitrix24Api\EntitiesServices\Bizproc\Robot;
 use Bitrix24Api\EntitiesServices\CRM\Activity;
 use Bitrix24Api\EntitiesServices\CRM\ActivityCommunication;
@@ -591,5 +592,14 @@ class ApiClient
     public function messageServiceSender(): Sender
     {
         return new Sender($this);
+    }
+
+    /**
+     * Bizproc Event
+     */
+
+     public function bizprocEvent(array $params = []): Event
+    {
+        return new Event($this, $params);
     }
 }
