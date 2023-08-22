@@ -6,6 +6,7 @@ namespace Bitrix24Api;
 use Bitrix24Api\Batch\Batch;
 use Bitrix24Api\Batch\Command;
 use Bitrix24Api\Config\Config;
+use Bitrix24Api\EntitiesServices\App;
 use Bitrix24Api\EntitiesServices\AppOption;
 use Bitrix24Api\EntitiesServices\Bizproc\Event;
 use Bitrix24Api\EntitiesServices\Bizproc\Robot;
@@ -38,6 +39,7 @@ use Bitrix24Api\EntitiesServices\Imbot\Message;
 use Bitrix24Api\EntitiesServices\Lists\Element as ListsElement;
 use Bitrix24Api\EntitiesServices\Lists\Lists;
 use Bitrix24Api\EntitiesServices\Lists\ListsField;
+use Bitrix24Api\EntitiesServices\Messageservice\Sender;
 use Bitrix24Api\EntitiesServices\Placement;
 use Bitrix24Api\EntitiesServices\Profile;
 use Bitrix24Api\EntitiesServices\Sonet\Group;
@@ -47,8 +49,6 @@ use Bitrix24Api\EntitiesServices\Task\Stages;
 use Bitrix24Api\EntitiesServices\Task\Task;
 use Bitrix24Api\EntitiesServices\User;
 use Bitrix24Api\EntitiesServices\UserOption;
-use Bitrix24Api\EntitiesServices\Messageservice;
-use Bitrix24Api\EntitiesServices\Messageservice\Sender;
 use Bitrix24Api\Exceptions\ApiException;
 use Bitrix24Api\Exceptions\ApplicationNotInstalled;
 use Bitrix24Api\Exceptions\ExpiredRefreshToken;
@@ -202,7 +202,7 @@ class ApiClient
                         $response = $this->request($method, $params);
                     }
 
-                    if($body['error'] === 'ERROR_OAUTH' && $body['error_description'] === 'Application not installed') {
+                    if ($body['error'] === 'ERROR_OAUTH' && $body['error_description'] === 'Application not installed') {
                         throw new ApplicationNotInstalled();
                     }
 
@@ -570,6 +570,11 @@ class ApiClient
         return new Robot($this, $params);
     }
 
+    public function app(): App
+    {
+        return new App($this);
+    }
+
     public function option(): AppOption
     {
         return new AppOption($this);
@@ -598,7 +603,7 @@ class ApiClient
      * Bizproc Event
      */
 
-     public function bizprocEvent(array $params = []): Event
+    public function bizprocEvent(array $params = []): Event
     {
         return new Event($this, $params);
     }

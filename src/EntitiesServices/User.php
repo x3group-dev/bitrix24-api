@@ -29,4 +29,12 @@ class User extends BaseEntity
         $entity = new $class(current($response->getResponseData()->getResult()->getResultData()));
         return !empty($response) ? $entity : null;
     }
+
+    public function access($access = []): bool
+    {
+        $params = [
+            'ACCESS' => $access
+        ];
+        return current($this->api->request(sprintf($this->getMethod(), 'access'), $params)->getResponseData()->getResult()->getResultData());
+    }
 }

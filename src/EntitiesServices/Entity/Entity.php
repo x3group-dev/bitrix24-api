@@ -4,13 +4,11 @@ namespace Bitrix24Api\EntitiesServices\Entity;
 
 use Bitrix24Api\ApiClient;
 use Bitrix24Api\EntitiesServices\BaseEntity;
-use Bitrix24Api\EntitiesServices\Traits\GetTrait;
 use Bitrix24Api\Exceptions\ApiException;
 use Bitrix24Api\Exceptions\Entity\AlredyExists;
 use Bitrix24Api\Exceptions\Entity\NotFound;
 use Bitrix24Api\Exceptions\InvalidArgumentException;
 use Bitrix24Api\Models\Entity\EntityModel;
-use Illuminate\Support\Facades\Log;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -93,6 +91,20 @@ class Entity extends BaseEntity
             $this->api->request(sprintf($this->getMethod(), 'delete'), ['ENTITY' => $this->entityId]);
             return true;
         } catch (ApiException $exception) {
+            throw new \Exception($exception->getMessage());
+        }
+    }
+
+    public function rights($access = []): array
+    {
+        try {
+            $params = ['ENTITY' => $this->entityId];
+            if (!empty($access))
+                $params['ACCESS'] = $access;
+
+            return $this->api->request(sprintf($this->getMethod(), 'rights'), $params)->getResponseData()->getResult()->getResultData();
+        } catch (ApiException $exception) {
+
             throw new \Exception($exception->getMessage());
         }
     }

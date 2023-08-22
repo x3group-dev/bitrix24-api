@@ -18,6 +18,11 @@ class ItemModel extends AbstractModel implements HasIdInterface
         return $this->NAME;
     }
 
+    public function getCreatedBy(): int
+    {
+        return (int)$this->CREATED_BY;
+    }
+
     public function getDateCreate(): \DateTime
     {
         return new \DateTime($this->DATE_CREATE);
