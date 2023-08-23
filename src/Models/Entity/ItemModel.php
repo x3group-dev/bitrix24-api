@@ -18,6 +18,16 @@ class ItemModel extends AbstractModel implements HasIdInterface
         return $this->NAME;
     }
 
+    public function getSort(): int
+    {
+        return (int)$this->SORT;
+    }
+
+    public function getSectionId(): int
+    {
+        return (int)$this->SECTION;
+    }
+
     public function getCreatedBy(): int
     {
         return (int)$this->CREATED_BY;
@@ -28,6 +38,20 @@ class ItemModel extends AbstractModel implements HasIdInterface
         return new \DateTime($this->DATE_CREATE);
     }
 
+    public function getTimeStamp(): \DateTime
+    {
+        return new \DateTime($this->TIMESTAMP_X);
+    }
+
+    public function getEntity(): string
+    {
+        return $this->ENTITY;
+    }
+
+    public function getPreviewText(): ?string
+    {
+        return $this->PREVIEW_TEXT;
+    }
 
     public function getDetailText(): ?string
     {
