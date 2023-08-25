@@ -65,6 +65,6 @@ class ItemModel extends AbstractModel implements HasIdInterface
 
     #[Pure] public function getProperty($property): mixed
     {
-        return isset($this->data['PROPERTY_VALUES']) ? $this->data['PROPERTY_VALUES'][$property] : null;
+        return $this->data['PROPERTY_VALUES'][$property] ?? null;
     }
 }
