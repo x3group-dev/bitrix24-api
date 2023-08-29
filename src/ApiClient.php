@@ -472,7 +472,7 @@ class ApiClient
     /**
      * @throws Exceptions\InvalidArgumentException
      */
-    public function entity(string $entityId): Entity
+    public function entity(?string $entityId): Entity
     {
         return new Entity($this, $entityId);
     }

@@ -4,6 +4,8 @@ namespace Bitrix24Api\EntitiesServices\Entity;
 
 use Bitrix24Api\ApiClient;
 use Bitrix24Api\EntitiesServices\BaseEntity;
+use Bitrix24Api\EntitiesServices\Traits\Base\GetListArrayTrait;
+use Bitrix24Api\EntitiesServices\Traits\Base\GetListTrait;
 use Bitrix24Api\Exceptions\ApiException;
 use Bitrix24Api\Exceptions\Entity\AlredyExists;
 use Bitrix24Api\Exceptions\Entity\NotFound;
@@ -16,20 +18,21 @@ use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 
 class Entity extends BaseEntity
 {
+    use GetListTrait;
     protected string $method = 'entity.%s';
     public const ITEM_CLASS = EntityModel::class;
     protected string $resultKey = '';
-    protected string $listMethod = '';
-    private string $entityId = '';
+    protected string $listMethod = 'get';
+    private ?string $entityId = '';
 
     /**
      * @throws InvalidArgumentException
      */
-    public function __construct(ApiClient $api, string $entityTypeId)
+    public function __construct(ApiClient $api, ?string $entityTypeId)
     {
         parent::__construct($api, []);
-        if (empty($entityTypeId)) {
-            throw new InvalidArgumentException('entityId is null');
+        if (!is_null($entityTypeId) && empty($entityTypeId)) {
+            throw new InvalidArgumentException('entityId is empty');
         }
         $this->entityId = $entityTypeId;
     }
