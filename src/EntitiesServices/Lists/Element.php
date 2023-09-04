@@ -7,7 +7,6 @@ use Bitrix24Api\EntitiesServices\Traits\Base\GetListFastTrait;
 use Bitrix24Api\EntitiesServices\Traits\Base\GetListTrait;
 use Bitrix24Api\Exceptions\ApiException;
 use Bitrix24Api\Models\Lists\ElementModel;
-use Illuminate\Support\Facades\Log;
 
 class Element extends BaseEntity
 {

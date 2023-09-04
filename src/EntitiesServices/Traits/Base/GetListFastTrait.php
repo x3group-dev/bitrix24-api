@@ -38,7 +38,10 @@ trait GetListFastTrait
             if ($this->resultKey) {
                 $resultData = $result->getResponseData()->getResult()->getResultData()[$this->resultKey] ?? [];
             } else {
-                $resultData = $result->getResponseData()->getResult()->getResultData() ?? [];
+                if ($result->getResponseData()->getResult())
+                    $resultData = $result->getResponseData()->getResult()->getResultData();
+                else
+                    $resultData = [];
             }
 
             $start = $params['start'] ?? 0;
