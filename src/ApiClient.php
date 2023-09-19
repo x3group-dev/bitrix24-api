@@ -35,6 +35,8 @@ use Bitrix24Api\EntitiesServices\Entity\Entity;
 use Bitrix24Api\EntitiesServices\Entity\Item;
 use Bitrix24Api\EntitiesServices\Entity\ItemProperty;
 use Bitrix24Api\EntitiesServices\Entity\Section;
+use Bitrix24Api\EntitiesServices\Imbot\Bot;
+use Bitrix24Api\EntitiesServices\Imbot\Chat;
 use Bitrix24Api\EntitiesServices\Imbot\Message;
 use Bitrix24Api\EntitiesServices\Lists\Element as ListsElement;
 use Bitrix24Api\EntitiesServices\Lists\Lists;
@@ -583,6 +585,21 @@ class ApiClient
     public function userOption(): UserOption
     {
         return new UserOption($this);
+    }
+
+    public function imBot(): Bot
+    {
+        return new Bot($this);
+    }
+
+    public function imBotChat(): Chat
+    {
+        return new Chat($this);
+    }
+
+    public function imBotChatUser(): Chat\User
+    {
+        return new Chat\User($this);
     }
 
     public function imBotMessage(): Message
