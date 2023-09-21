@@ -56,6 +56,11 @@ use Bitrix24Api\Exceptions\ApplicationNotInstalled;
 use Bitrix24Api\Exceptions\ExpiredRefreshToken;
 use Bitrix24Api\Exceptions\InvalidArgumentException;
 use Bitrix24Api\Exceptions\ServerInternalError;
+use Bitrix24Api\Http\HttpRequest;
+use Bitrix24Api\Http\Interfaces\Providers\HttpProviderInterface;
+use Bitrix24Api\Http\Providers\HttpProvider;
+use Bitrix24Api\Http\Validators\ResponseValidator;
+use Bitrix24Api\Interfaces\ClientInterface;
 use Exception;
 use Generator;
 use Psr\Log\LoggerInterface;
@@ -67,7 +72,7 @@ use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class ApiClient
+class ApiClient implements ClientInterface
 {
     protected const BITRIX24_OAUTH_SERVER_URL = 'https://oauth.bitrix.info';
     protected const CLIENT_VERSION = '1.0.0';
@@ -77,14 +82,27 @@ class ApiClient
     protected string $typeTransport = 'json';
     private $accessTokenRefreshCallback;
 
+    private HttpProviderInterface $provider;
+
 
     public function __construct(Config $config = null)
     {
         $this->config = $config;
+        $this->provider = new HttpRequest(HttpProvider::make());
+        $this->provider->setLogger($this->config->getLogger());
+
+        $this->provider
+            ->setHeader('User-Agent', sprintf('%s-v-%s-php-%s', self::CLIENT_USER_AGENT, self::CLIENT_VERSION, PHP_VERSION));
+
         $this->httpClient = HttpClient::create(['http_version' => '2.0']);
     }
 
-    public function getConfig()
+    /**
+     * Получение настроек API клиента.
+     *
+     * @return Config
+     */
+    public function getConfig(): Config
     {
         return $this->config;
     }
@@ -153,6 +171,7 @@ class ApiClient
 
         $response = null;
 
+        /*
         if (!is_null($this->config->getLogger())) {
             $this->config->getLogger()->debug(
                 sprintf('request.start %s', $method),
@@ -161,9 +180,30 @@ class ApiClient
                 ]
             );
         }
+        */
         try {
+            $request = $this->getProvider()->request($url, $requestOptions);
+
+            try {
+                (new ResponseValidator($request))->validate();
+            } catch (ExpiredRefreshToken $expiredRefreshToken) {
+                $this->getNewAccessToken();
+                $response = $this->request($method, $params);
+            } catch (ApiException $exception) {
+                if ($exception->getCode() === -1 && $this->config->getLogger() !== null) {
+                    $this->config->getLogger()->debug(
+                        sprintf('request.end %s', $method),
+                        [
+                            'httpStatus' => $request->getStatusCode(),
+                            'body' => $request->toArray(false)
+                        ]
+                    );
+                }
+            }
+
+            /*
             $request = $this->httpClient->request('POST', $url, $requestOptions);
-            if (!is_null($this->config->getLogger())) {
+            if ($this->config->getLogger() !== null) {
                 $this->config->getLogger()->debug(
                     sprintf('request.end %s', $method),
                     [
@@ -172,6 +212,8 @@ class ApiClient
                     ]
                 );
             }
+            */
+            /*
             switch ($request->getStatusCode()) {
                 case 200:
                     $response = new Response($request, new Command($method, $params));
@@ -223,6 +265,7 @@ class ApiClient
                     }
                     break;
             }
+            */
 
         } catch (TransportExceptionInterface $e) {
             if (!is_null($this->config->getLogger())) {
@@ -623,5 +666,10 @@ class ApiClient
     public function bizprocEvent(array $params = []): Event
     {
         return new Event($this, $params);
+    }
+
+    protected function getProvider(): HttpProviderInterface
+    {
+        return $this->provider;
     }
 }
