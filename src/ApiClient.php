@@ -6,6 +6,7 @@ namespace Bitrix24Api;
 use Bitrix24Api\Batch\Batch;
 use Bitrix24Api\Batch\Command;
 use Bitrix24Api\Config\Config;
+use Bitrix24Api\EntitiesServices\Ai\Engine;
 use Bitrix24Api\EntitiesServices\App;
 use Bitrix24Api\EntitiesServices\AppOption;
 use Bitrix24Api\EntitiesServices\Bizproc\Event;
@@ -349,6 +350,15 @@ class ApiClient
     public function placement(): Placement
     {
         return new Placement($this);
+    }
+
+    /*
+     * AI
+     */
+
+    public function aiEngine(): Engine
+    {
+        return new Engine($this);
     }
 
     /*
