@@ -4,11 +4,8 @@ namespace Bitrix24Api\EntitiesServices\Ai;
 
 use Bitrix24Api\EntitiesServices\BaseEntity;
 use Bitrix24Api\EntitiesServices\Traits\Base\GetListArrayTrait;
-use Bitrix24Api\EntitiesServices\Traits\Base\GetListFastTrait;
-use Bitrix24Api\EntitiesServices\Traits\Base\GetListTrait;
 use Bitrix24Api\Exceptions\ApiException;
 use Bitrix24Api\Models\BaseModel;
-use Illuminate\Support\Facades\Log;
 
 class Engine extends BaseEntity
 {
@@ -30,7 +27,6 @@ class Engine extends BaseEntity
             $response = $this->api->request(sprintf($this->getMethod(), 'register'), $params);
             $result = $response->getResponseData()->getResult()->getResultData();
 
-            Log::debug($result);
             return (int)current($result);
         } catch (ApiException $exception) {
 
