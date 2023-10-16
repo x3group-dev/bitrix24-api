@@ -3,6 +3,7 @@
 namespace Bitrix24Api\EntitiesServices\Lists;
 
 use Bitrix24Api\EntitiesServices\BaseEntity;
+use Bitrix24Api\EntitiesServices\Traits\Base\GetListTrait;
 use Bitrix24Api\EntitiesServices\Traits\GetWithoutParamsTrait;
 use Bitrix24Api\Exceptions\ApiException;
 use Bitrix24Api\Exceptions\Entity\AlredyExists;
@@ -11,7 +12,7 @@ use Bitrix24Api\Models\Lists\ListModel;
 
 class Lists extends BaseEntity
 {
-    use GetWithoutParamsTrait;
+    use GetWithoutParamsTrait, GetListTrait;
 
     protected string $method = 'lists.%s';
     public const ITEM_CLASS = ListModel::class;
