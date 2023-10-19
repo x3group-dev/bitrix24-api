@@ -39,7 +39,7 @@ class ResponseTest extends TestCase
         }
 
         $methodResult = $method->invoke($this->getMock(), $response);
-
+        
         $this->assertEquals($methodResult, $actualResult);
     }
 
@@ -90,13 +90,13 @@ class ResponseTest extends TestCase
             ],
             [
                 'response' => [
-                    'result' => ['age', 'food'],
+                    'result' => null,
                     'time' => [],
                     'next' => new \stdClass(),
                     'total' => [1,2,3],
                 ],
                 'actualResult' => [
-                    'result' => ["age", "food"],
+                    'result' => [],
                     'time' => [],
                     'next' => null,
                     'total' => null,
@@ -104,13 +104,12 @@ class ResponseTest extends TestCase
             ],
             [
                 'response' => [
-                    'result' => ['age', 'food'],
                     'time' => [],
                     'next' => 23.5,
                     'total' => "Hello world",
                 ],
                 'actualResult' => [
-                    'result' => ["age", "food"],
+                    'result' => [],
                     'time' => [],
                     'next' => 23,
                     'total' => null,
@@ -136,6 +135,39 @@ class ResponseTest extends TestCase
                 ],
                 'actualResult' => [
                     'result' => ['opa'],
+                    'time' => [],
+                    'next' => null,
+                    'total' => null,
+                ]
+            ],
+            [
+                'response' => [
+                    'result' => new \stdClass(),
+                ],
+                'actualResult' => [
+                    'result' => [new \stdClass()],
+                    'time' => [],
+                    'next' => null,
+                    'total' => null,
+                ]
+            ],
+            [
+                'response' => [
+                    'result' => 123,
+                ],
+                'actualResult' => [
+                    'result' => [123],
+                    'time' => [],
+                    'next' => null,
+                    'total' => null,
+                ]
+            ],
+            [
+                'response' => [
+                    'result' => [[]],
+                ],
+                'actualResult' => [
+                    'result' => [[]],
                     'time' => [],
                     'next' => null,
                     'total' => null,
