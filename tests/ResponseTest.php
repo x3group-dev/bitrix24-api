@@ -39,7 +39,7 @@ class ResponseTest extends TestCase
         }
 
         $methodResult = $method->invoke($this->getMock(), $response);
-        
+
         $this->assertEquals($methodResult, $actualResult);
     }
 
@@ -168,6 +168,15 @@ class ResponseTest extends TestCase
                 ],
                 'actualResult' => [
                     'result' => [[]],
+                    'time' => [],
+                    'next' => null,
+                    'total' => null,
+                ]
+            ],
+            [
+                'response' => [],
+                'actualResult' => [
+                    'result' => [],
                     'time' => [],
                     'next' => null,
                     'total' => null,
