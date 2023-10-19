@@ -2,11 +2,11 @@
 
 namespace Bitrix24Api;
 
-use PHPUnit\Framework\MockObject\MockBuilder;
 use ReflectionClass;
 use ReflectionException;
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockBuilder;
 
 class ResponseTest extends TestCase
 {
