@@ -106,16 +106,20 @@ class Response
     #[ArrayShape(['total' => 'int', 'next' => 'int', 'result' => 'array', 'time' => 'array'])]
     protected function prepareHttpResponse(array $response): array
     {
-        if (!is_array($response['result'])) {
-            $response['result'] = [$response['result']];
+        if (isset($response['result'])) {
+            if (!is_array($response['result'])) {
+                $response['result'] = [$response['result']];
+            }
+        } else {
+            $response['result'] = [];
         }
 
-        if (!is_array($response['time'])) {
+        if (!isset($response['time']) || !is_array($response['time'])) {
             $response['time'] = [];
         }
 
-        $response['next'] = array_key_exists('next', $response) ? intval($response['next']) : null;
-        $response['total'] = array_key_exists('total', $response) ? intval($response['total']) : null;
+        $response['next'] = isset($response['next']) && is_numeric($response['next']) ? intval($response['next']) : null;
+        $response['total'] = isset($response['total']) && is_numeric($response['total']) ? intval($response['total']) : null;
 
         return $response;
     }
