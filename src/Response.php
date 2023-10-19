@@ -87,7 +87,7 @@ class Response
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      *
-     * @author Daniil S. GlobalArts
+     * @author Daniil S.
      */
     protected function getHttpResponse(): array
     {
