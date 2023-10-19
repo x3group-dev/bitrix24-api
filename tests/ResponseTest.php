@@ -2,6 +2,7 @@
 
 namespace Bitrix24Api;
 
+use PHPUnit\Framework\MockObject\MockBuilder;
 use ReflectionClass;
 use ReflectionException;
 
@@ -9,12 +10,14 @@ use PHPUnit\Framework\TestCase;
 
 class ResponseTest extends TestCase
 {
-    protected Response $response;
+    protected MockBuilder $response;
     protected ReflectionClass $reflectionClass;
 
     public function setUp(): void
     {
         $this->reflectionClass = new ReflectionClass(Response::class);
+        $this->response = $this->getMockBuilder(Response::class)
+            ->disableOriginalConstructor();
     }
 
     /**
@@ -25,7 +28,7 @@ class ResponseTest extends TestCase
      * @return void
      * @throws ReflectionException
      * @dataProvider prepareDataProvider
-     * @author Daniil S. GlobalArts
+     * @author Daniil S.
      */
     public function testPrepareHttpResponse(array $response, array $actualResult): void
     {
@@ -35,12 +38,18 @@ class ResponseTest extends TestCase
             $method->setAccessible(true);
         }
 
-        $mock = $this->getMockBuilder(Response::class)
-            ->disableOriginalConstructor();
-
-        $methodResult = $method->invoke($mock->getMock(), $response);
+        $methodResult = $method->invoke($this->getMock(), $response);
 
         $this->assertEquals($methodResult, $actualResult);
+    }
+
+    /**
+     * @return Response
+     * @author Daniil S.
+     */
+    protected function getMock(): Response
+    {
+        return $this->response->getMock();
     }
 
     /**
@@ -49,7 +58,7 @@ class ResponseTest extends TestCase
      * Вторым параметром передается актуальные данные, для преобразования
      *
      * @return array
-     * @author Daniil S. GlobalArts
+     * @author Daniil S.
      */
     public static function prepareDataProvider(): array
     {
