@@ -212,6 +212,13 @@ class ApiClient
                     break;
                 case 500:
                     throw new ServerInternalError('request: 500 internal error');
+                case 503:
+                    $body = $request->toArray(false);
+                    if ($body['error'] === 'QUERY_LIMIT_EXCEEDED') {
+                        sleep(4);
+                        $response = $this->request($method, $params);
+                    }
+                    break;
                 default:
                     if (!is_null($this->config->getLogger())) {
                         $this->config->getLogger()->debug(
