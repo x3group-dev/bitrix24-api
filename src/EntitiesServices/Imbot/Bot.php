@@ -28,4 +28,24 @@ class Bot extends BaseEntity
         }
         return false;
     }
+
+    public function unregister(int $botId, string $clientId = '')
+    {
+        $fields = [
+            'BOT_ID' => $botId,
+            'CLIENT_ID' => $clientId
+        ];
+        try {
+            $response = $this->api->request('imbot.unregister', $fields);
+            $result = $response->getResponseData()->getResult()->getResultData();
+            if (current($result)) {
+                return current($result);
+            } else {
+                return false;
+            }
+        } catch (ApiException $e) {
+
+        }
+        return false;
+    }
 }

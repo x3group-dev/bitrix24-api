@@ -18,6 +18,11 @@ class ItemModel extends AbstractModel implements HasIdInterface
         return $this->NAME;
     }
 
+    public function getCode(): string
+    {
+        return (string)$this->CODE;
+    }
+
     public function getSort(): int
     {
         return (int)$this->SORT;
@@ -48,14 +53,14 @@ class ItemModel extends AbstractModel implements HasIdInterface
         return $this->ENTITY;
     }
 
-    public function getPreviewText(): ?string
+    public function getPreviewText(): string
     {
-        return $this->PREVIEW_TEXT;
+        return (string)$this->PREVIEW_TEXT;
     }
 
-    public function getDetailText(): ?string
+    public function getDetailText(): string
     {
-        return $this->DETAIL_TEXT;
+        return (string)$this->DETAIL_TEXT;
     }
 
     public function getId(): ?int

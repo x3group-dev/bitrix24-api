@@ -36,6 +36,7 @@ use Bitrix24Api\EntitiesServices\Entity\Entity;
 use Bitrix24Api\EntitiesServices\Entity\Item;
 use Bitrix24Api\EntitiesServices\Entity\ItemProperty;
 use Bitrix24Api\EntitiesServices\Entity\Section;
+use Bitrix24Api\EntitiesServices\Im\Notify;
 use Bitrix24Api\EntitiesServices\Imbot\Bot;
 use Bitrix24Api\EntitiesServices\Imbot\Chat;
 use Bitrix24Api\EntitiesServices\Imbot\Message;
@@ -45,6 +46,7 @@ use Bitrix24Api\EntitiesServices\Lists\ListsField;
 use Bitrix24Api\EntitiesServices\Messageservice\Sender;
 use Bitrix24Api\EntitiesServices\Placement;
 use Bitrix24Api\EntitiesServices\Profile;
+use Bitrix24Api\EntitiesServices\Scope;
 use Bitrix24Api\EntitiesServices\Sonet\Group;
 use Bitrix24Api\EntitiesServices\Sonet\GroupUser;
 use Bitrix24Api\EntitiesServices\Task\CommentItem;
@@ -491,7 +493,7 @@ class ApiClient
     /**
      * @throws Exceptions\InvalidArgumentException
      */
-    public function entity(?string $entityId): Entity
+    public function entity($entityId = null): Entity
     {
         return new Entity($this, $entityId);
     }
@@ -624,6 +626,11 @@ class ApiClient
         return new Message($this);
     }
 
+    public function imBotCommand(): \Bitrix24Api\EntitiesServices\Imbot\Command
+    {
+        return new \Bitrix24Api\EntitiesServices\Imbot\Command($this);
+    }
+
     /*
      * MessageService
      */
@@ -640,5 +647,15 @@ class ApiClient
     public function bizprocEvent(array $params = []): Event
     {
         return new Event($this, $params);
+    }
+
+    public function scope(): Scope
+    {
+        return new Scope($this);
+    }
+
+    public function imNotify(array $params = []): Notify
+    {
+        return new Notify($this, $params);
     }
 }
