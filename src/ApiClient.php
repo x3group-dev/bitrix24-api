@@ -157,27 +157,26 @@ class ApiClient
         $response = null;
 
         if (!is_null($this->config->getLogger())) {
-            $this->config->getLogger()->debug(
+            $this->config->getLogger()->info(
                 sprintf('request.start %s', $method),
                 [
+                    'apiMethod' => $method,
                     'params' => $params,
                 ]
             );
         }
         try {
             $request = $this->httpClient->request('POST', $url, $requestOptions);
-            if (!is_null($this->config->getLogger())) {
-                $this->config->getLogger()->debug(
-                    sprintf('request.end %s', $method),
-                    [
-                        'httpStatus' => $request->getStatusCode(),
-                        'body' => $request->toArray(false)
-                    ]
-                );
-            }
+
             switch ($request->getStatusCode()) {
                 case 200:
                     $response = new Response($request, new Command($method, $params));
+                    $this->config->getLogger()->debug(
+                        'request response',
+                        [
+                            'body' => $request->toArray(false),
+                        ]
+                    );
                     break;
                 case 404:
                     $body = $request->toArray(false);
@@ -212,12 +211,14 @@ class ApiClient
                     }
 
                     break;
+                case 403:
+                    throw new ApplicationNotInstalled();
                 case 500:
                     throw new ServerInternalError('request: 500 internal error');
                 case 503:
                     $body = $request->toArray(false);
                     if ($body['error'] === 'QUERY_LIMIT_EXCEEDED') {
-                        sleep(4);
+                        sleep(rand(4, 10));
                         $response = $this->request($method, $params);
                     }
                     break;
@@ -227,11 +228,21 @@ class ApiClient
                             sprintf('request.end %s', $method),
                             [
                                 'httpStatus' => $request->getStatusCode(),
-                                'body' => $request->toArray(false)
+                                'responseInfo' => $request->getInfo(),
                             ]
                         );
                     }
                     break;
+            }
+            if (!is_null($this->config->getLogger())) {
+
+                $this->config->getLogger()->debug(
+                    sprintf('request.end %s', $method),
+                    [
+                        'apiMethod' => $method,
+                        'httpStatus' => $request->getStatusCode(),
+                    ]
+                );
             }
 
         } catch (TransportExceptionInterface $e) {
