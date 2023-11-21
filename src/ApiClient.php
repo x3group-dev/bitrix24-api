@@ -298,8 +298,7 @@ class ApiClient
                 case 401:
                     throw new ExpiredRefreshToken('refresh token expired');
                 default:
-
-                    break;
+                    throw new ExpiredRefreshToken('unknown error');
             }
         } catch (TransportExceptionInterface $e) {
             if (!is_null($this->config->getLogger())) {
