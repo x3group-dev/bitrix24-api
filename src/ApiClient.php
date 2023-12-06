@@ -28,6 +28,7 @@ use Bitrix24Api\EntitiesServices\CRM\ProductProperty;
 use Bitrix24Api\EntitiesServices\CRM\ProductPropertyEnumeration;
 use Bitrix24Api\EntitiesServices\CRM\ProductPropertySettings;
 use Bitrix24Api\EntitiesServices\CRM\Smart\Item as crmSmartItem;
+use Bitrix24Api\EntitiesServices\CRM\Smart\Type as crmSmartType;
 use Bitrix24Api\EntitiesServices\Disk\AttachedObject;
 use Bitrix24Api\EntitiesServices\Disk\File;
 use Bitrix24Api\EntitiesServices\Disk\Folder;
@@ -387,6 +388,11 @@ class ApiClient
     public function crmSmartItem(array $params = []): crmSmartItem
     {
         return new crmSmartItem($this, $params);
+    }
+
+    public function crmSmartType(array $params = []): crmSmartType
+    {
+        return new crmSmartType($this, $params);
     }
 
     public function crmActivity(array $params = []): Activity
