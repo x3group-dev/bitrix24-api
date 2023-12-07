@@ -22,9 +22,10 @@ class Type extends BaseEntity
     {
         try {
             $response = $this->api->request(sprintf($this->getMethod(), 'add'), $params);
-            $result = $response->getResponseData()->getResult()->getResultData();
 
-            return $result;
+            $class = static::ITEM_CLASS;
+            $entity = new $class(current($response->getResponseData()->getResult()->getResultData()));
+            return !empty($response) ? $entity : null;
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
