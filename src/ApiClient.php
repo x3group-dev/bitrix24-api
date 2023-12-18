@@ -174,12 +174,24 @@ class ApiClient
                     $this->config->getLogger()->debug(
                         'request response',
                         [
+                            'apiMethod' => $method,
+                            'httpStatus' => $request->getStatusCode(),
                             'body' => $request->toArray(false),
                         ]
                     );
                     break;
                 case 404:
                     $body = $request->toArray(false);
+                    if (!is_null($this->config->getLogger())) {
+                        $this->config->getLogger()->debug(
+                            sprintf('request.end %s', $method),
+                            [
+                                'apiMethod' => $method,
+                                'httpStatus' => $request->getStatusCode(),
+                                'body' => $request->toArray(false),
+                            ]
+                        );
+                    }
                     if (isset($body['error'])) {
                         if ($body['error'] === 'ERROR_METHOD_NOT_FOUND') {
                             //todo: correct exception
@@ -189,6 +201,16 @@ class ApiClient
                     break;
                 case 400:
                     $body = $request->toArray(false);
+                    if (!is_null($this->config->getLogger())) {
+                        $this->config->getLogger()->debug(
+                            sprintf('request.end %s', $method),
+                            [
+                                'apiMethod' => $method,
+                                'httpStatus' => $request->getStatusCode(),
+                                'body' => $request->toArray(false),
+                            ]
+                        );
+                    }
                     if (isset($body['error'])) {
                         if ($body['error'] === 'ERROR_REQUIRED_PARAMETERS_MISSING') {
                             //todo: correct exception
@@ -200,7 +222,16 @@ class ApiClient
                     break;
                 case 401:
                     $body = $request->toArray(false);
-
+                    if (!is_null($this->config->getLogger())) {
+                        $this->config->getLogger()->debug(
+                            sprintf('request.end %s', $method),
+                            [
+                                'apiMethod' => $method,
+                                'httpStatus' => $request->getStatusCode(),
+                                'body' => $request->toArray(false),
+                            ]
+                        );
+                    }
                     if ($body['error'] === 'expired_token') {
                         $this->getNewAccessToken();
                         $response = $this->request($method, $params);
@@ -212,11 +243,39 @@ class ApiClient
 
                     break;
                 case 403:
+                    if (!is_null($this->config->getLogger())) {
+                        $this->config->getLogger()->debug(
+                            sprintf('request.end %s', $method),
+                            [
+                                'apiMethod' => $method,
+                                'httpStatus' => $request->getStatusCode(),
+                            ]
+                        );
+                    }
                     throw new ApplicationNotInstalled();
                 case 500:
+                    if (!is_null($this->config->getLogger())) {
+                        $this->config->getLogger()->debug(
+                            sprintf('request.end %s', $method),
+                            [
+                                'apiMethod' => $method,
+                                'httpStatus' => $request->getStatusCode(),
+                            ]
+                        );
+                    }
                     throw new ServerInternalError('request: 500 internal error');
                 case 503:
                     $body = $request->toArray(false);
+                    if (!is_null($this->config->getLogger())) {
+                        $this->config->getLogger()->debug(
+                            sprintf('request.end %s', $method),
+                            [
+                                'apiMethod' => $method,
+                                'httpStatus' => $request->getStatusCode(),
+                                'body' => $request->toArray(false),
+                            ]
+                        );
+                    }
                     if ($body['error'] === 'QUERY_LIMIT_EXCEEDED') {
                         sleep(rand(4, 10));
                         $response = $this->request($method, $params);
@@ -234,17 +293,6 @@ class ApiClient
                     }
                     break;
             }
-            if (!is_null($this->config->getLogger())) {
-
-                $this->config->getLogger()->debug(
-                    sprintf('request.end %s', $method),
-                    [
-                        'apiMethod' => $method,
-                        'httpStatus' => $request->getStatusCode(),
-                    ]
-                );
-            }
-
         } catch (TransportExceptionInterface $e) {
             if (!is_null($this->config->getLogger())) {
                 $this->config->getLogger()->error($e->getMessage());
