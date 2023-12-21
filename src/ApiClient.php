@@ -18,6 +18,7 @@ use Bitrix24Api\EntitiesServices\CRM\Catalog;
 use Bitrix24Api\EntitiesServices\CRM\Category;
 use Bitrix24Api\EntitiesServices\CRM\Company;
 use Bitrix24Api\EntitiesServices\CRM\Contact;
+use Bitrix24Api\EntitiesServices\CRM\Currency;
 use Bitrix24Api\EntitiesServices\CRM\Deal;
 use Bitrix24Api\EntitiesServices\CRM\ItemProductRow;
 use Bitrix24Api\EntitiesServices\CRM\Lead;
@@ -44,6 +45,7 @@ use Bitrix24Api\EntitiesServices\Imbot\Message;
 use Bitrix24Api\EntitiesServices\Lists\Element as ListsElement;
 use Bitrix24Api\EntitiesServices\Lists\Lists;
 use Bitrix24Api\EntitiesServices\Lists\ListsField;
+use Bitrix24Api\EntitiesServices\Log\Blogpost;
 use Bitrix24Api\EntitiesServices\Messageservice\Sender;
 use Bitrix24Api\EntitiesServices\Placement;
 use Bitrix24Api\EntitiesServices\Profile;
@@ -526,6 +528,11 @@ class ApiClient
         return new ProductPropertySettings($this, $params);
     }
 
+    public function crmCurrency(array $params = []): Currency
+    {
+        return new Currency($this, $params);
+    }
+
     /*
      * Disk
      */
@@ -721,5 +728,10 @@ class ApiClient
     public function imNotify(array $params = []): Notify
     {
         return new Notify($this, $params);
+    }
+
+    public function logBlogpost(): Blogpost
+    {
+        return new Blogpost($this);
     }
 }
