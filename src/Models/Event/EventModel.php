@@ -3,17 +3,11 @@
 namespace Bitrix24Api\Models\Event;
 
 use Bitrix24Api\Models\AbstractModel;
-use Bitrix24Api\Models\Interfaces\HasIdInterface;
 
-class EventModel extends AbstractModel implements HasIdInterface
+class EventModel extends AbstractModel
 {
     public function toArray(): array
     {
         return $this->data;
-    }
-
-    public function getId(): ?int
-    {
-        return $this->event;
     }
 }
