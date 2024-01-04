@@ -20,8 +20,10 @@ use Bitrix24Api\EntitiesServices\CRM\Company;
 use Bitrix24Api\EntitiesServices\CRM\Contact;
 use Bitrix24Api\EntitiesServices\CRM\Currency;
 use Bitrix24Api\EntitiesServices\CRM\Deal;
+use Bitrix24Api\EntitiesServices\CRM\DealContactItems;
 use Bitrix24Api\EntitiesServices\CRM\ItemProductRow;
 use Bitrix24Api\EntitiesServices\CRM\Lead;
+use Bitrix24Api\EntitiesServices\CRM\LeadContactItems;
 use Bitrix24Api\EntitiesServices\CRM\LeadProductRows;
 use Bitrix24Api\EntitiesServices\CRM\LeadUserField;
 use Bitrix24Api\EntitiesServices\CRM\Product;
@@ -498,6 +500,16 @@ class ApiClient
         return new Deal($this, $params);
     }
 
+    public function crmDealContactItems(array $params = []): DealContactItems
+    {
+        return new DealContactItems($this, $params);
+    }
+
+    public function crmLeadContactItems(array $params = []): LeadContactItems
+    {
+        return new LeadContactItems($this, $params);
+    }
+
     public function crmLeadProductRows(array $params = []): LeadProductRows
     {
         return new LeadProductRows($this, $params);
@@ -733,5 +745,10 @@ class ApiClient
     public function logBlogpost(): Blogpost
     {
         return new Blogpost($this);
+    }
+
+    public function event(array $params = []): \Bitrix24Api\EntitiesServices\Event\Event
+    {
+        return new EntitiesServices\Event\Event($this, $params);
     }
 }
