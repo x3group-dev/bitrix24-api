@@ -17,10 +17,12 @@ use Bitrix24Api\EntitiesServices\CRM\ActivityType;
 use Bitrix24Api\EntitiesServices\CRM\Catalog;
 use Bitrix24Api\EntitiesServices\CRM\Category;
 use Bitrix24Api\EntitiesServices\CRM\Company;
+use Bitrix24Api\EntitiesServices\CRM\Constants;
 use Bitrix24Api\EntitiesServices\CRM\Contact;
 use Bitrix24Api\EntitiesServices\CRM\Currency;
 use Bitrix24Api\EntitiesServices\CRM\Deal;
 use Bitrix24Api\EntitiesServices\CRM\DealContactItems;
+use Bitrix24Api\EntitiesServices\CRM\DealUserField;
 use Bitrix24Api\EntitiesServices\CRM\ItemProductRow;
 use Bitrix24Api\EntitiesServices\CRM\Lead;
 use Bitrix24Api\EntitiesServices\CRM\LeadContactItems;
@@ -58,6 +60,7 @@ use Bitrix24Api\EntitiesServices\Task\CommentItem;
 use Bitrix24Api\EntitiesServices\Task\Stages;
 use Bitrix24Api\EntitiesServices\Task\Task;
 use Bitrix24Api\EntitiesServices\User;
+use Bitrix24Api\EntitiesServices\UserFieldConfig\UserFieldConfig;
 use Bitrix24Api\EntitiesServices\UserOption;
 use Bitrix24Api\Exceptions\ApiException;
 use Bitrix24Api\Exceptions\ApplicationNotInstalled;
@@ -520,6 +523,11 @@ class ApiClient
         return new LeadUserField($this, $params);
     }
 
+    public function crmDealUserField(array $params = []): DealUserField
+    {
+        return new DealUserField($this, $params);
+    }
+
     public function crmProduct(array $params = []): Product
     {
         return new Product($this, $params);
@@ -750,5 +758,15 @@ class ApiClient
     public function event(array $params = []): \Bitrix24Api\EntitiesServices\Event\Event
     {
         return new EntitiesServices\Event\Event($this, $params);
+    }
+
+    public function crmConstants(): Constants
+    {
+        return new Constants();
+    }
+
+    public function userFieldConfig(): UserFieldConfig
+    {
+        return new UserFieldConfig($this);
     }
 }
