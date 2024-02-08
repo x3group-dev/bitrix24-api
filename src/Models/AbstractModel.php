@@ -2,9 +2,7 @@
 
 namespace Bitrix24Api\Models;
 
-use Illuminate\Contracts\Support\Arrayable;
-
-abstract class AbstractModel implements Arrayable
+abstract class AbstractModel
 {
     /**
      * @return array
