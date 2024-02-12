@@ -75,4 +75,19 @@ class Item extends BaseEntity
             throw new \Exception($e->getMessage());
         }
     }
+
+    public function delete($id): bool
+    {
+        $fields = ['ID' => $id];
+
+        if (!empty($this->baseParams))
+            $fields = array_merge($fields, $this->baseParams);
+
+        try {
+            $result = $this->api->request(sprintf($this->getMethod(), 'delete'), $fields);
+            return true;
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
+    }
 }
