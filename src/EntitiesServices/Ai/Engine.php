@@ -14,13 +14,14 @@ class Engine extends BaseEntity
     protected string $method = 'ai.engine.%s';
     public const ITEM_CLASS = BaseModel::class;
 
-    public function register(string $name, string $code, string $category, string $completionsUrl): int
+    public function register(string $name, string $code, string $category, string $completionsUrl, array $settings = []): int
     {
         $params = [
             'name' => $name,
             'code' => $code,
             'category' => $category,
             'completions_url' => $completionsUrl,
+            'settings' => $settings
         ];
 
         try {

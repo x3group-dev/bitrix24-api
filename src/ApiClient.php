@@ -17,10 +17,15 @@ use Bitrix24Api\EntitiesServices\CRM\ActivityType;
 use Bitrix24Api\EntitiesServices\CRM\Catalog;
 use Bitrix24Api\EntitiesServices\CRM\Category;
 use Bitrix24Api\EntitiesServices\CRM\Company;
+use Bitrix24Api\EntitiesServices\CRM\Constants;
 use Bitrix24Api\EntitiesServices\CRM\Contact;
+use Bitrix24Api\EntitiesServices\CRM\Currency;
 use Bitrix24Api\EntitiesServices\CRM\Deal;
+use Bitrix24Api\EntitiesServices\CRM\DealContactItems;
+use Bitrix24Api\EntitiesServices\CRM\DealUserField;
 use Bitrix24Api\EntitiesServices\CRM\ItemProductRow;
 use Bitrix24Api\EntitiesServices\CRM\Lead;
+use Bitrix24Api\EntitiesServices\CRM\LeadContactItems;
 use Bitrix24Api\EntitiesServices\CRM\LeadProductRows;
 use Bitrix24Api\EntitiesServices\CRM\LeadUserField;
 use Bitrix24Api\EntitiesServices\CRM\Product;
@@ -28,6 +33,7 @@ use Bitrix24Api\EntitiesServices\CRM\ProductProperty;
 use Bitrix24Api\EntitiesServices\CRM\ProductPropertyEnumeration;
 use Bitrix24Api\EntitiesServices\CRM\ProductPropertySettings;
 use Bitrix24Api\EntitiesServices\CRM\Smart\Item as crmSmartItem;
+use Bitrix24Api\EntitiesServices\CRM\Smart\Type as crmSmartType;
 use Bitrix24Api\EntitiesServices\Disk\AttachedObject;
 use Bitrix24Api\EntitiesServices\Disk\File;
 use Bitrix24Api\EntitiesServices\Disk\Folder;
@@ -43,6 +49,7 @@ use Bitrix24Api\EntitiesServices\Imbot\Message;
 use Bitrix24Api\EntitiesServices\Lists\Element as ListsElement;
 use Bitrix24Api\EntitiesServices\Lists\Lists;
 use Bitrix24Api\EntitiesServices\Lists\ListsField;
+use Bitrix24Api\EntitiesServices\Log\Blogpost;
 use Bitrix24Api\EntitiesServices\Messageservice\Sender;
 use Bitrix24Api\EntitiesServices\Placement;
 use Bitrix24Api\EntitiesServices\Profile;
@@ -53,6 +60,7 @@ use Bitrix24Api\EntitiesServices\Task\CommentItem;
 use Bitrix24Api\EntitiesServices\Task\Stages;
 use Bitrix24Api\EntitiesServices\Task\Task;
 use Bitrix24Api\EntitiesServices\User;
+use Bitrix24Api\EntitiesServices\UserFieldConfig\UserFieldConfig;
 use Bitrix24Api\EntitiesServices\UserOption;
 use Bitrix24Api\Exceptions\ApiException;
 use Bitrix24Api\Exceptions\ApplicationNotInstalled;
@@ -174,12 +182,24 @@ class ApiClient
                     $this->config->getLogger()->debug(
                         'request response',
                         [
+                            'apiMethod' => $method,
+                            'httpStatus' => $request->getStatusCode(),
                             'body' => $request->toArray(false),
                         ]
                     );
                     break;
                 case 404:
                     $body = $request->toArray(false);
+                    if (!is_null($this->config->getLogger())) {
+                        $this->config->getLogger()->debug(
+                            sprintf('request.end %s', $method),
+                            [
+                                'apiMethod' => $method,
+                                'httpStatus' => $request->getStatusCode(),
+                                'body' => $request->toArray(false),
+                            ]
+                        );
+                    }
                     if (isset($body['error'])) {
                         if ($body['error'] === 'ERROR_METHOD_NOT_FOUND') {
                             //todo: correct exception
@@ -189,6 +209,16 @@ class ApiClient
                     break;
                 case 400:
                     $body = $request->toArray(false);
+                    if (!is_null($this->config->getLogger())) {
+                        $this->config->getLogger()->debug(
+                            sprintf('request.end %s', $method),
+                            [
+                                'apiMethod' => $method,
+                                'httpStatus' => $request->getStatusCode(),
+                                'body' => $request->toArray(false),
+                            ]
+                        );
+                    }
                     if (isset($body['error'])) {
                         if ($body['error'] === 'ERROR_REQUIRED_PARAMETERS_MISSING') {
                             //todo: correct exception
@@ -200,7 +230,16 @@ class ApiClient
                     break;
                 case 401:
                     $body = $request->toArray(false);
-
+                    if (!is_null($this->config->getLogger())) {
+                        $this->config->getLogger()->debug(
+                            sprintf('request.end %s', $method),
+                            [
+                                'apiMethod' => $method,
+                                'httpStatus' => $request->getStatusCode(),
+                                'body' => $request->toArray(false),
+                            ]
+                        );
+                    }
                     if ($body['error'] === 'expired_token') {
                         $this->getNewAccessToken();
                         $response = $this->request($method, $params);
@@ -212,11 +251,39 @@ class ApiClient
 
                     break;
                 case 403:
+                    if (!is_null($this->config->getLogger())) {
+                        $this->config->getLogger()->debug(
+                            sprintf('request.end %s', $method),
+                            [
+                                'apiMethod' => $method,
+                                'httpStatus' => $request->getStatusCode(),
+                            ]
+                        );
+                    }
                     throw new ApplicationNotInstalled();
                 case 500:
+                    if (!is_null($this->config->getLogger())) {
+                        $this->config->getLogger()->debug(
+                            sprintf('request.end %s', $method),
+                            [
+                                'apiMethod' => $method,
+                                'httpStatus' => $request->getStatusCode(),
+                            ]
+                        );
+                    }
                     throw new ServerInternalError('request: 500 internal error');
                 case 503:
                     $body = $request->toArray(false);
+                    if (!is_null($this->config->getLogger())) {
+                        $this->config->getLogger()->debug(
+                            sprintf('request.end %s', $method),
+                            [
+                                'apiMethod' => $method,
+                                'httpStatus' => $request->getStatusCode(),
+                                'body' => $request->toArray(false),
+                            ]
+                        );
+                    }
                     if ($body['error'] === 'QUERY_LIMIT_EXCEEDED') {
                         sleep(rand(4, 10));
                         $response = $this->request($method, $params);
@@ -234,17 +301,6 @@ class ApiClient
                     }
                     break;
             }
-            if (!is_null($this->config->getLogger())) {
-
-                $this->config->getLogger()->debug(
-                    sprintf('request.end %s', $method),
-                    [
-                        'apiMethod' => $method,
-                        'httpStatus' => $request->getStatusCode(),
-                    ]
-                );
-            }
-
         } catch (TransportExceptionInterface $e) {
             if (!is_null($this->config->getLogger())) {
                 $this->config->getLogger()->error($e->getMessage());
@@ -298,8 +354,7 @@ class ApiClient
                 case 401:
                     throw new ExpiredRefreshToken('refresh token expired');
                 default:
-
-                    break;
+                    throw new ExpiredRefreshToken('unknown error');
             }
         } catch (TransportExceptionInterface $e) {
             if (!is_null($this->config->getLogger())) {
@@ -390,6 +445,11 @@ class ApiClient
         return new crmSmartItem($this, $params);
     }
 
+    public function crmSmartType(array $params = []): crmSmartType
+    {
+        return new crmSmartType($this, $params);
+    }
+
     public function crmActivity(array $params = []): Activity
     {
         return new Activity($this, $params);
@@ -443,6 +503,16 @@ class ApiClient
         return new Deal($this, $params);
     }
 
+    public function crmDealContactItems(array $params = []): DealContactItems
+    {
+        return new DealContactItems($this, $params);
+    }
+
+    public function crmLeadContactItems(array $params = []): LeadContactItems
+    {
+        return new LeadContactItems($this, $params);
+    }
+
     public function crmLeadProductRows(array $params = []): LeadProductRows
     {
         return new LeadProductRows($this, $params);
@@ -451,6 +521,11 @@ class ApiClient
     public function crmLeadUserField(array $params = []): LeadUserField
     {
         return new LeadUserField($this, $params);
+    }
+
+    public function crmDealUserField(array $params = []): DealUserField
+    {
+        return new DealUserField($this, $params);
     }
 
     public function crmProduct(array $params = []): Product
@@ -471,6 +546,11 @@ class ApiClient
     public function crmProductPropertySettings(array $params = []): ProductPropertySettings
     {
         return new ProductPropertySettings($this, $params);
+    }
+
+    public function crmCurrency(array $params = []): Currency
+    {
+        return new Currency($this, $params);
     }
 
     /*
@@ -668,5 +748,25 @@ class ApiClient
     public function imNotify(array $params = []): Notify
     {
         return new Notify($this, $params);
+    }
+
+    public function logBlogpost(): Blogpost
+    {
+        return new Blogpost($this);
+    }
+
+    public function event(array $params = []): \Bitrix24Api\EntitiesServices\Event\Event
+    {
+        return new EntitiesServices\Event\Event($this, $params);
+    }
+
+    public function crmConstants(): Constants
+    {
+        return new Constants();
+    }
+
+    public function userFieldConfig(): UserFieldConfig
+    {
+        return new UserFieldConfig($this);
     }
 }

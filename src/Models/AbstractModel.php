@@ -2,8 +2,6 @@
 
 namespace Bitrix24Api\Models;
 
-use Illuminate\Support\Str;
-
 abstract class AbstractModel
 {
     /**

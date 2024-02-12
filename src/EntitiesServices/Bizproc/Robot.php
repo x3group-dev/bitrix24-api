@@ -43,7 +43,7 @@ class Robot extends BaseEntity
     public function update(string $code, string $handler, int $userId, string|array $name, bool $useSubscription, array $properties, bool $usePlacement, string $placementHandler, array $returnProperties): bool
     {
         try {
-            $this->api->request(sprintf($this->getMethod(), 'update'), [
+            $fields = [
                 'CODE' => $code,
                 'FIELDS' => [
                     'HANDLER' => $handler,
@@ -55,7 +55,11 @@ class Robot extends BaseEntity
                     'PROPERTIES' => $properties,
                     'RETURN_PROPERTIES' => $returnProperties
                 ]
-            ]);
+            ];
+            if(empty($placementHandler))
+                unset($fields['FIELDS']['PLACEMENT_HANDLER']);
+
+            $this->api->request(sprintf($this->getMethod(), 'update'), $fields);
             return true;
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
