@@ -22,6 +22,7 @@ class Folder extends BaseEntity
     {
         try {
             $response = $this->api->request(sprintf($this->getMethod(), 'uploadfile'), ['id' => $id, 'fileContent' => $fileContent, 'data' => $data]);
+
             return new FileModel($response->getResponseData()->getResult()->getResultData());
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
