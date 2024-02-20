@@ -179,14 +179,16 @@ class ApiClient
             switch ($request->getStatusCode()) {
                 case 200:
                     $response = new Response($request, new Command($method, $params));
-                    $this->config->getLogger()->debug(
-                        'request response',
-                        [
-                            'apiMethod' => $method,
-                            'httpStatus' => $request->getStatusCode(),
-                            'body' => $request->toArray(false),
-                        ]
-                    );
+                    if (!is_null($this->config->getLogger())) {
+                        $this->config->getLogger()->debug(
+                            'request response',
+                            [
+                                'apiMethod' => $method,
+                                'httpStatus' => $request->getStatusCode(),
+                                'body' => $request->toArray(false),
+                            ]
+                        );
+                    }
                     break;
                 case 404:
                     $body = $request->toArray(false);
