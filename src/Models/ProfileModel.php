@@ -13,8 +13,8 @@ class ProfileModel extends AbstractModel implements HasIdInterface
     protected ?string $lastName;
     protected string $personalGender;
     protected string $personalPhoto;
-    protected string $timeZone;
-    protected int $timeZoneOffset;
+    protected ?string $timeZone;
+    protected ?int $timeZoneOffset;
 
     /**
      * @throws InvalidArgumentException
@@ -156,7 +156,7 @@ class ProfileModel extends AbstractModel implements HasIdInterface
     /**
      * @return string
      */
-    public function getTimeZone(): string
+    public function getTimeZone(): ?string
     {
         return $this->timeZone;
     }
@@ -164,7 +164,7 @@ class ProfileModel extends AbstractModel implements HasIdInterface
     /**
      * @param string $timeZone
      */
-    public function setTimeZone(string $timeZone): self
+    public function setTimeZone(?string $timeZone): self
     {
         $this->timeZone = $timeZone;
         return $this;
@@ -173,7 +173,7 @@ class ProfileModel extends AbstractModel implements HasIdInterface
     /**
      * @return int
      */
-    public function getTimeZoneOffset(): int
+    public function getTimeZoneOffset(): ?int
     {
         return $this->timeZoneOffset;
     }
@@ -181,7 +181,7 @@ class ProfileModel extends AbstractModel implements HasIdInterface
     /**
      * @param int $timeZoneOffset
      */
-    public function setTimeZoneOffset(int $timeZoneOffset): self
+    public function setTimeZoneOffset(?int $timeZoneOffset): self
     {
         $this->timeZoneOffset = $timeZoneOffset;
         return $this;
