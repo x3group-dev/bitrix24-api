@@ -114,4 +114,31 @@ class ListsField extends BaseEntity
 
         return [];
     }
+
+    public function delete(string $iblockTypeId, string|int $iblockCodeOrId, int $sonetGroupId = 0, string|int $fieldId = null): bool
+    {
+        if(is_null($fieldId)){
+            throw new \Exception('fieldId is null');
+        }
+
+        $params = [
+            'IBLOCK_TYPE_ID' => $iblockTypeId,
+            'SOCNET_GROUP_ID' => $sonetGroupId,
+        ];
+
+        if (is_int($iblockCodeOrId)) {
+            $params['IBLOCK_ID'] = $iblockCodeOrId;
+        } else {
+            $params['IBLOCK_CODE'] = $iblockCodeOrId;
+        }
+
+        $params['FIELD_ID'] = $fieldId;
+
+        try {
+            $this->api->request(sprintf($this->getMethod(), 'delete'), $params);
+            return true;
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
+    }
 }
