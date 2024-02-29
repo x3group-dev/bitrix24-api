@@ -48,6 +48,22 @@ class ItemModel extends AbstractModel implements HasIdInterface
         return new \DateTime($this->TIMESTAMP_X);
     }
 
+    public function getDateActiveFrom(): ?\DateTime
+    {
+        if (!empty($this->DATE_ACTIVE_FROM))
+            return new \DateTime($this->DATE_ACTIVE_FROM);
+        else
+            return null;
+    }
+
+    public function getDateActiveTo(): ?\DateTime
+    {
+        if (!empty($this->DATE_ACTIVE_TO))
+            return new \DateTime($this->DATE_ACTIVE_TO);
+        else
+            return null;
+    }
+
     public function getEntity(): string
     {
         return $this->ENTITY;
