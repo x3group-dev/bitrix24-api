@@ -34,8 +34,12 @@ class Item extends BaseEntity
         $response = $this->api->request(sprintf($this->getMethod(), 'get'), $params);
 
         $class = static::ITEM_CLASS;
-        $entity = new $class(current($response->getResponseData()->getResult()->getResultData()));
-        return !empty($response) ? $entity : null;
+        $entity = null;
+        $item = current($response->getResponseData()->getResult()->getResultData());
+        if ($item)
+            $entity = new $class($item);
+
+        return $entity;
     }
 
     public function add($params = [])
