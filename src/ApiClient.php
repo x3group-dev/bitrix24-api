@@ -17,8 +17,10 @@ use Bitrix24Api\EntitiesServices\CRM\ActivityType;
 use Bitrix24Api\EntitiesServices\CRM\Catalog;
 use Bitrix24Api\EntitiesServices\CRM\Category;
 use Bitrix24Api\EntitiesServices\CRM\Company;
+use Bitrix24Api\EntitiesServices\CRM\CompanyUserField;
 use Bitrix24Api\EntitiesServices\CRM\Constants;
 use Bitrix24Api\EntitiesServices\CRM\Contact;
+use Bitrix24Api\EntitiesServices\CRM\ContactUserField;
 use Bitrix24Api\EntitiesServices\CRM\Currency;
 use Bitrix24Api\EntitiesServices\CRM\Deal;
 use Bitrix24Api\EntitiesServices\CRM\DealContactItems;
@@ -33,6 +35,7 @@ use Bitrix24Api\EntitiesServices\CRM\ProductProperty;
 use Bitrix24Api\EntitiesServices\CRM\ProductPropertyEnumeration;
 use Bitrix24Api\EntitiesServices\CRM\ProductPropertySettings;
 use Bitrix24Api\EntitiesServices\CRM\Quote;
+use Bitrix24Api\EntitiesServices\CRM\QuoteUserField;
 use Bitrix24Api\EntitiesServices\CRM\Smart\Item as crmSmartItem;
 use Bitrix24Api\EntitiesServices\CRM\Smart\Type as crmSmartType;
 use Bitrix24Api\EntitiesServices\Disk\AttachedObject;
@@ -535,6 +538,21 @@ class ApiClient
     public function crmDealUserField(array $params = []): DealUserField
     {
         return new DealUserField($this, $params);
+    }
+
+    public function crmContactUserField(array $params = []): ContactUserField
+    {
+        return new ContactUserField($this, $params);
+    }
+
+    public function crmCompanyUserField(array $params = []): CompanyUserField
+    {
+        return new CompanyUserField($this, $params);
+    }
+
+    public function crmQuoteUserField(array $params = []): QuoteUserField
+    {
+        return new QuoteUserField($this, $params);
     }
 
     public function crmProduct(array $params = []): Product

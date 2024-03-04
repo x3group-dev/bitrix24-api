@@ -7,14 +7,14 @@ use Bitrix24Api\EntitiesServices\Traits\Base\DeleteTrait;
 use Bitrix24Api\EntitiesServices\Traits\Base\GetListTrait;
 use Bitrix24Api\EntitiesServices\Traits\Base\GetTrait;
 use Bitrix24Api\EntitiesServices\Traits\Base\UpdateTrait;
-use Bitrix24Api\Models\CRM\LeadUserFieldModel;
+use Bitrix24Api\Models\CRM\ContactUserFieldModel;
 
-class LeadUserField extends BaseEntity
+class ContactUserField extends BaseEntity
 {
     use GetTrait, GetListTrait, UpdateTrait, DeleteTrait;
 
-    protected string $method = 'crm.lead.userfield.%s';
-    public const ITEM_CLASS = LeadUserFieldModel::class;
+    protected string $method = 'crm.contact.userfield.%s';
+    public const ITEM_CLASS = ContactUserFieldModel::class;
     protected string $resultKey = '';
     protected string $listMethod = 'list';
 
