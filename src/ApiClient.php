@@ -32,6 +32,7 @@ use Bitrix24Api\EntitiesServices\CRM\Product;
 use Bitrix24Api\EntitiesServices\CRM\ProductProperty;
 use Bitrix24Api\EntitiesServices\CRM\ProductPropertyEnumeration;
 use Bitrix24Api\EntitiesServices\CRM\ProductPropertySettings;
+use Bitrix24Api\EntitiesServices\CRM\Quote;
 use Bitrix24Api\EntitiesServices\CRM\Smart\Item as crmSmartItem;
 use Bitrix24Api\EntitiesServices\CRM\Smart\Type as crmSmartType;
 use Bitrix24Api\EntitiesServices\Disk\AttachedObject;
@@ -499,6 +500,11 @@ class ApiClient
     public function crmLead(array $params = []): Lead
     {
         return new Lead($this, $params);
+    }
+
+    public function crmQuote(array $params = []): Quote
+    {
+        return new Quote($this, $params);
     }
 
     public function crmDeal(array $params = []): Deal
