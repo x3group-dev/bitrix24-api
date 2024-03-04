@@ -19,10 +19,10 @@ class Quote extends BaseEntity
     protected string $resultKey = '';
     protected string $listMethod = 'list';
 
-    public function add(array $fields, $params = [])
+    public function add(array $fields)
     {
         try {
-            $response = $this->api->request(sprintf($this->getMethod(), 'add'), ['fields' => $fields, 'params' => $params]);
+            $response = $this->api->request(sprintf($this->getMethod(), 'add'), ['fields' => $fields]);
             $result = $response->getResponseData()->getResult()->getResultData();
             if (isset($result['ID']) && $result['ID'] > 0) {
                 return $result['ID'];
@@ -33,7 +33,7 @@ class Quote extends BaseEntity
             throw new \Exception($e->getMessage());
         }
     }
-    
+
     /**
      * @throws \Exception
      */
