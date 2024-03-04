@@ -61,6 +61,7 @@ use Bitrix24Api\EntitiesServices\Task\Stages;
 use Bitrix24Api\EntitiesServices\Task\Task;
 use Bitrix24Api\EntitiesServices\User;
 use Bitrix24Api\EntitiesServices\UserFieldConfig\UserFieldConfig;
+use Bitrix24Api\EntitiesServices\UserFieldType\UserFieldType;
 use Bitrix24Api\EntitiesServices\UserOption;
 use Bitrix24Api\Exceptions\ApiException;
 use Bitrix24Api\Exceptions\ApplicationNotInstalled;
@@ -770,5 +771,10 @@ class ApiClient
     public function userFieldConfig(): UserFieldConfig
     {
         return new UserFieldConfig($this);
+    }
+
+    public function userFieldType(): UserFieldType
+    {
+        return new UserFieldType($this);
     }
 }
