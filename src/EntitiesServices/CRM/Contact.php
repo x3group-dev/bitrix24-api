@@ -27,11 +27,8 @@ class Contact extends BaseEntity
         try {
             $response = $this->api->request(sprintf($this->getMethod(), 'add'), ['fields' => $fields, 'params' => $params]);
             $result = $response->getResponseData()->getResult()->getResultData();
-            if (isset($result['ID']) && $result['ID'] > 0) {
-                return $result['ID'];
-            } else {
-                return false;
-            }
+
+            return current($result);
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
