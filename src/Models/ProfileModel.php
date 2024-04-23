@@ -122,7 +122,7 @@ class ProfileModel extends AbstractModel implements HasIdInterface
     /**
      * @return string
      */
-    public function getPersonalGender(): string
+    public function getPersonalGender(): ?string
     {
         return $this->personalGender;
     }
@@ -130,7 +130,7 @@ class ProfileModel extends AbstractModel implements HasIdInterface
     /**
      * @param string $personalGender
      */
-    public function setPersonalGender(string $personalGender): self
+    public function setPersonalGender(?string $personalGender): self
     {
         $this->personalGender = $personalGender;
         return $this;
@@ -139,7 +139,7 @@ class ProfileModel extends AbstractModel implements HasIdInterface
     /**
      * @return string
      */
-    public function getPersonalPhoto(): string
+    public function getPersonalPhoto(): ?string
     {
         return $this->personalPhoto;
     }
@@ -147,7 +147,7 @@ class ProfileModel extends AbstractModel implements HasIdInterface
     /**
      * @param string $personalPhoto
      */
-    public function setPersonalPhoto(string $personalPhoto): self
+    public function setPersonalPhoto(?string $personalPhoto): self
     {
         $this->personalPhoto = $personalPhoto;
         return $this;
