@@ -3,7 +3,6 @@
     "description": "Bitrix24 rest api",
     "type": "library",
     "license": "MIT",
-    "version": "1.2.5",
     "authors": [
         {
             "name": "x3Group",
