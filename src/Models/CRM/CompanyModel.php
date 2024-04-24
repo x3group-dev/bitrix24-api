@@ -21,4 +21,18 @@ class CompanyModel extends AbstractModel implements HasIdInterface
     {
         return $this->TITLE;
     }
+
+    public function hasPhone(): bool
+    {
+        return $this->HAS_PHONE === 'Y';
+    }
+
+    public function getFirstPhone(): ?string
+    {
+        if ($this->hasPhone()) {
+            return current($this->PHONE)['VALUE'];
+        }
+
+        return null;
+    }
 }
