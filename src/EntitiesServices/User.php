@@ -163,25 +163,13 @@ class User extends BaseEntity
      * @param array $allDepartments
      * @param int $departmentId
      * @return array
+     * @deprecated
+     * moved to Department
+     *  Принимает на вход массив из всех департаментов результата department.get
+     *  возвращается массив поддепартаментов
      */
     private function getAllChildDepartments(array $allDepartments, int $departmentId): array
     {
-        $res = [];
-
-        foreach ($allDepartments as $department) {
-            if ($department['ID'] == $departmentId) {
-                continue;
-            }
-            if (array_key_exists('PARENT', $department) && $department['PARENT'] == $departmentId) {
-                $res[] = (int)$department['ID'];
-                $departments = $this->getAllChildDepartments($allDepartments, $department['ID']);
-                if (!empty($departments)) {
-                    foreach ($departments as $departmentVal) {
-                        $res[] = $departmentVal;
-                    }
-                }
-            }
-        }
-        return $res;
+        return $this->api->department()->getAllChild($allDepartments, $departmentId);
     }
 }

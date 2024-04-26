@@ -38,6 +38,7 @@ use Bitrix24Api\EntitiesServices\CRM\Quote;
 use Bitrix24Api\EntitiesServices\CRM\QuoteUserField;
 use Bitrix24Api\EntitiesServices\CRM\Smart\Item as crmSmartItem;
 use Bitrix24Api\EntitiesServices\CRM\Smart\Type as crmSmartType;
+use Bitrix24Api\EntitiesServices\Department;
 use Bitrix24Api\EntitiesServices\Disk\AttachedObject;
 use Bitrix24Api\EntitiesServices\Disk\File;
 use Bitrix24Api\EntitiesServices\Disk\Folder;
@@ -800,5 +801,10 @@ class ApiClient
     public function userFieldType(): UserFieldType
     {
         return new UserFieldType($this);
+    }
+
+    public function department(): Department
+    {
+        return new Department($this);
     }
 }
