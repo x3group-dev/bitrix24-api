@@ -25,6 +25,7 @@ use Bitrix24Api\EntitiesServices\CRM\Currency;
 use Bitrix24Api\EntitiesServices\CRM\Deal;
 use Bitrix24Api\EntitiesServices\CRM\DealContactItems;
 use Bitrix24Api\EntitiesServices\CRM\DealUserField;
+use Bitrix24Api\EntitiesServices\CRM\Invoice;
 use Bitrix24Api\EntitiesServices\CRM\ItemProductRow;
 use Bitrix24Api\EntitiesServices\CRM\Lead;
 use Bitrix24Api\EntitiesServices\CRM\LeadContactItems;
@@ -514,6 +515,11 @@ class ApiClient
     public function crmDeal(array $params = []): Deal
     {
         return new Deal($this, $params);
+    }
+
+    public function crmInvoice(array $params = []): Invoice
+    {
+        return new Invoice($this, $params);
     }
 
     public function crmDealContactItems(array $params = []): DealContactItems
