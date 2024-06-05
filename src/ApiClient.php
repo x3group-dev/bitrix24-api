@@ -172,11 +172,15 @@ class ApiClient
         $response = null;
 
         if (!is_null($this->config->getLogger())) {
+            $loggedParams = $params;
+            if (array_key_exists('fileContent', $loggedParams)) {
+                $loggedParams['fileContent'] = substr($loggedParams['fileContent'], 0, 100) . '...';
+            }
             $this->config->getLogger()->info(
                 sprintf('request.start %s', $method),
                 [
                     'apiMethod' => $method,
-                    'params' => $params,
+                    'params' => $loggedParams,
                 ]
             );
         }
