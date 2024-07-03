@@ -39,6 +39,7 @@ use Bitrix24Api\EntitiesServices\CRM\Quote;
 use Bitrix24Api\EntitiesServices\CRM\QuoteUserField;
 use Bitrix24Api\EntitiesServices\CRM\Smart\Item as crmSmartItem;
 use Bitrix24Api\EntitiesServices\CRM\Smart\Type as crmSmartType;
+use Bitrix24Api\EntitiesServices\CRM\Status;
 use Bitrix24Api\EntitiesServices\Department;
 use Bitrix24Api\EntitiesServices\Disk\AttachedObject;
 use Bitrix24Api\EntitiesServices\Disk\File;
@@ -589,6 +590,11 @@ class ApiClient
     public function crmCurrency(array $params = []): Currency
     {
         return new Currency($this, $params);
+    }
+
+    public function crmStatus(array $params = []): Status
+    {
+        return new Status($this, $params);
     }
 
     /*
