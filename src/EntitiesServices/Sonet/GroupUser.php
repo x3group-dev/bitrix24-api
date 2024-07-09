@@ -34,7 +34,7 @@ class GroupUser extends BaseEntity
         return !empty($response) ? $entity : null;
     }
 
-    public function delete(int $groupId, int ...$userId): bool
+    public function delete(int $groupId, int|array $userId): bool
     {
         $result = $this->api->request(sprintf($this->method, 'delete'), [
             'GROUP_ID' => $groupId,
@@ -44,7 +44,7 @@ class GroupUser extends BaseEntity
         return current($result);
     }
 
-    public function add(int $groupId, int ...$userId): bool
+    public function add(int $groupId, int|array $userId): bool
     {
         $result = $this->api->request(sprintf($this->method, 'add'), [
             'GROUP_ID' => $groupId,
