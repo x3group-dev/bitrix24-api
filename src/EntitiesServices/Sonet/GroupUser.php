@@ -33,4 +33,24 @@ class GroupUser extends BaseEntity
         $entity = new $class($response->getResponseData()->getResult()->getResultData());
         return !empty($response) ? $entity : null;
     }
+
+    public function delete(int $groupId, int|array $userId): bool
+    {
+        $result = $this->api->request(sprintf($this->method, 'delete'), [
+            'GROUP_ID' => $groupId,
+            'USER_ID' => $userId,
+        ])->getResponseData()->getResult()->getResultData();
+
+        return current($result);
+    }
+
+    public function add(int $groupId, int|array $userId): bool
+    {
+        $result = $this->api->request(sprintf($this->method, 'add'), [
+            'GROUP_ID' => $groupId,
+            'USER_ID' => $userId,
+        ])->getResponseData()->getResult()->getResultData();
+
+        return current($result);
+    }
 }
