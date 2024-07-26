@@ -13,6 +13,7 @@ use Bitrix24Api\EntitiesServices\Bizproc\Event;
 use Bitrix24Api\EntitiesServices\Bizproc\Robot;
 use Bitrix24Api\EntitiesServices\CRM\Activity;
 use Bitrix24Api\EntitiesServices\CRM\ActivityCommunication;
+use Bitrix24Api\EntitiesServices\CRM\ActivityConfigurable;
 use Bitrix24Api\EntitiesServices\CRM\ActivityType;
 use Bitrix24Api\EntitiesServices\CRM\Catalog;
 use Bitrix24Api\EntitiesServices\CRM\Category;
@@ -469,6 +470,11 @@ class ApiClient
     public function crmActivity(array $params = []): Activity
     {
         return new Activity($this, $params);
+    }
+
+    public function crmActivityConfigurable(array $params = []): ActivityConfigurable
+    {
+        return new ActivityConfigurable($this, $params);
     }
 
     public function crmActivityCommunication(array $params = []): ActivityCommunication
