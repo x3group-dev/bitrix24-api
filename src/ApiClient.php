@@ -41,6 +41,7 @@ use Bitrix24Api\EntitiesServices\CRM\QuoteUserField;
 use Bitrix24Api\EntitiesServices\CRM\Smart\Item as crmSmartItem;
 use Bitrix24Api\EntitiesServices\CRM\Smart\Type as crmSmartType;
 use Bitrix24Api\EntitiesServices\CRM\Status;
+use Bitrix24Api\EntitiesServices\CRM\TimelineBindings;
 use Bitrix24Api\EntitiesServices\CRM\TimelineComment;
 use Bitrix24Api\EntitiesServices\CRM\TimelineIcon;
 use Bitrix24Api\EntitiesServices\Department;
@@ -613,6 +614,11 @@ class ApiClient
     public function crmTimelineIcon(array $params = []): TimelineIcon
     {
         return new TimelineIcon($this, $params);
+    }
+
+    public function crmTimelineBindings(array $params = []): TimelineBindings
+    {
+        return new TimelineBindings($this, $params);
     }
 
     /*
