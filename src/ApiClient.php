@@ -41,6 +41,7 @@ use Bitrix24Api\EntitiesServices\CRM\Smart\Item as crmSmartItem;
 use Bitrix24Api\EntitiesServices\CRM\Smart\Type as crmSmartType;
 use Bitrix24Api\EntitiesServices\CRM\Status;
 use Bitrix24Api\EntitiesServices\CRM\TimelineComment;
+use Bitrix24Api\EntitiesServices\CRM\TimelineIcon;
 use Bitrix24Api\EntitiesServices\Department;
 use Bitrix24Api\EntitiesServices\Disk\AttachedObject;
 use Bitrix24Api\EntitiesServices\Disk\File;
@@ -601,6 +602,11 @@ class ApiClient
     public function crmTimelineComment(array $params = []): TimelineComment
     {
         return new TimelineComment($this, $params);
+    }
+
+    public function crmTimelineIcon(array $params = []): TimelineIcon
+    {
+        return new TimelineIcon($this, $params);
     }
 
     /*
