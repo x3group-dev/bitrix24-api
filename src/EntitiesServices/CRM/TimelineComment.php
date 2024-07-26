@@ -19,7 +19,7 @@ class TimelineComment extends BaseEntity
     protected string $resultKey = '';
     protected string $listMethod = 'list';
 
-    public function add(int $entityId, string $entityType, string $comment, ?int $authorId = null, array $files = []): int|bool
+    public function add(int $entityId, string $entityType, string $comment, ?int $authorId = null, array $files = []): int
     {
         $fields = [
             'ENTITY_ID' => $entityId,
