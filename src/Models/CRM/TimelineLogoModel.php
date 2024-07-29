@@ -4,7 +4,7 @@ namespace Bitrix24Api\Models\CRM;
 
 use Bitrix24Api\Models\AbstractModel;
 
-class TimelineIconModel extends AbstractModel
+class TimelineLogoModel extends AbstractModel
 {
     public function toArray(): array
     {
