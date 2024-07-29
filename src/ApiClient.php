@@ -13,6 +13,7 @@ use Bitrix24Api\EntitiesServices\Bizproc\Event;
 use Bitrix24Api\EntitiesServices\Bizproc\Robot;
 use Bitrix24Api\EntitiesServices\CRM\Activity;
 use Bitrix24Api\EntitiesServices\CRM\ActivityCommunication;
+use Bitrix24Api\EntitiesServices\CRM\ActivityConfigurable;
 use Bitrix24Api\EntitiesServices\CRM\ActivityType;
 use Bitrix24Api\EntitiesServices\CRM\Catalog;
 use Bitrix24Api\EntitiesServices\CRM\Category;
@@ -40,6 +41,9 @@ use Bitrix24Api\EntitiesServices\CRM\QuoteUserField;
 use Bitrix24Api\EntitiesServices\CRM\Smart\Item as crmSmartItem;
 use Bitrix24Api\EntitiesServices\CRM\Smart\Type as crmSmartType;
 use Bitrix24Api\EntitiesServices\CRM\Status;
+use Bitrix24Api\EntitiesServices\CRM\TimelineBindings;
+use Bitrix24Api\EntitiesServices\CRM\TimelineComment;
+use Bitrix24Api\EntitiesServices\CRM\TimelineIcon;
 use Bitrix24Api\EntitiesServices\Department;
 use Bitrix24Api\EntitiesServices\Disk\AttachedObject;
 use Bitrix24Api\EntitiesServices\Disk\File;
@@ -469,6 +473,11 @@ class ApiClient
         return new Activity($this, $params);
     }
 
+    public function crmActivityConfigurable(array $params = []): ActivityConfigurable
+    {
+        return new ActivityConfigurable($this, $params);
+    }
+
     public function crmActivityCommunication(array $params = []): ActivityCommunication
     {
         return new ActivityCommunication($this, $params);
@@ -595,6 +604,21 @@ class ApiClient
     public function crmStatus(array $params = []): Status
     {
         return new Status($this, $params);
+    }
+
+    public function crmTimelineComment(array $params = []): TimelineComment
+    {
+        return new TimelineComment($this, $params);
+    }
+
+    public function crmTimelineIcon(array $params = []): TimelineIcon
+    {
+        return new TimelineIcon($this, $params);
+    }
+
+    public function crmTimelineBindings(array $params = []): TimelineBindings
+    {
+        return new TimelineBindings($this, $params);
     }
 
     /*
