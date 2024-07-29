@@ -44,6 +44,7 @@ use Bitrix24Api\EntitiesServices\CRM\Status;
 use Bitrix24Api\EntitiesServices\CRM\TimelineBindings;
 use Bitrix24Api\EntitiesServices\CRM\TimelineComment;
 use Bitrix24Api\EntitiesServices\CRM\TimelineIcon;
+use Bitrix24Api\EntitiesServices\CRM\TimelineLogo;
 use Bitrix24Api\EntitiesServices\Department;
 use Bitrix24Api\EntitiesServices\Disk\AttachedObject;
 use Bitrix24Api\EntitiesServices\Disk\File;
@@ -614,6 +615,11 @@ class ApiClient
     public function crmTimelineIcon(array $params = []): TimelineIcon
     {
         return new TimelineIcon($this, $params);
+    }
+
+    public function crmTimelineLogo(array $params = []): TimelineLogo
+    {
+        return new TimelineLogo($this, $params);
     }
 
     public function crmTimelineBindings(array $params = []): TimelineBindings
