@@ -90,22 +90,30 @@ use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Psr\SimpleCache\CacheInterface;
 
 class ApiClient
 {
     protected const BITRIX24_OAUTH_SERVER_URL = 'https://oauth.bitrix.info';
     protected const CLIENT_VERSION = '1.0.0';
     protected const CLIENT_USER_AGENT = 'bitrix24-api';
+
+    protected const OPERATING_LIMIT = 480;
+    protected const OPERATING_RESET_PERIOD = 600;
+    protected const ONE_SECOND = 1;
+
     protected Config $config;
     protected HttpClientInterface $httpClient;
     protected string $typeTransport = 'json';
+    protected ?CacheInterface $cache;
     private $accessTokenRefreshCallback;
 
 
-    public function __construct(Config $config = null)
+    public function __construct(Config $config = null, ?CacheInterface $cache = null)
     {
         $this->config = $config;
         $this->httpClient = HttpClient::create(['http_version' => '2.0']);
+        $this->cache = $cache;
     }
 
     public function getConfig()
@@ -191,10 +199,56 @@ class ApiClient
             );
         }
         try {
+            if ($this->cache) {
+                $keyUsleep = sprintf(
+                    '%s.%s.%s',
+                    $this->config->getCredential()->getMemberId(),
+                    $method,
+                    'usleep',
+                );
+
+                $usleep = $this->cache->get($keyUsleep);
+
+                if ($usleep > 0) {
+                    usleep($usleep);
+                }
+            }
+
             $request = $this->httpClient->request('POST', $url, $requestOptions);
 
             switch ($request->getStatusCode()) {
                 case 200:
+                    if ($this->cache) {
+                        $keyOperating = sprintf(
+                            '%s.%s.%s',
+                            $this->config->getCredential()->getMemberId(),
+                            $method,
+                            'operating',
+                        );
+
+                        $responseData = $request->toArray(false);
+                        if (isset($responseData['time'])) {
+                            $time = $responseData['time'];
+
+                            $currentOperating = $time['operating'];
+
+                            $previousOperating = $this->cache->get($keyOperating) ?? 0;
+
+                            $diff = $currentOperating - $previousOperating;
+
+                            if ($diff > 0) {
+                                $possibleRps = ((self::OPERATING_LIMIT - $previousOperating) / $diff) / self::OPERATING_RESET_PERIOD;
+                                $nextUsleep = (self::ONE_SECOND / $possibleRps) * 1000 * 1000;
+                                $nextUsleep = (int) $nextUsleep;
+                                $ttl = (int) round(self::ONE_SECOND / $possibleRps) + self::ONE_SECOND;
+
+                                $this->cache->set($keyUsleep, $nextUsleep, $ttl);
+                            }
+
+                            $this->cache->set($keyOperating, $currentOperating, self::OPERATING_RESET_PERIOD);
+                        }
+                    }
+
                     $response = new Response($request, new Command($method, $params));
                     if (!is_null($this->config->getLogger())) {
                         $this->config->getLogger()->debug(
