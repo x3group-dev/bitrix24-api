@@ -218,7 +218,9 @@ class ApiClient
 
             switch ($request->getStatusCode()) {
                 case 200:
-                    if ($this->cache) {
+                    $responseData = $request->toArray(false);
+
+                    if ($this->cache && isset($responseData['time']['operating'])) {
                         $keyOperating = sprintf(
                             '%s.%s.%s',
                             $this->config->getCredential()->getMemberId(),
@@ -226,7 +228,6 @@ class ApiClient
                             'operating',
                         );
 
-                        $responseData = $request->toArray(false);
                         if (isset($responseData['time'])) {
                             $time = $responseData['time'];
 
