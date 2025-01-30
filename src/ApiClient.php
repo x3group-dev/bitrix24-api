@@ -229,9 +229,14 @@ class ApiClient
                         );
 
                         if (isset($responseData['time'])) {
-                            $time = $responseData['time'];
+                            if ($method === 'batch') {
+                                $batchOperating = array_column($responseData['result']['result_time'] ?? [], 'operating');
+                                $currentOperating = empty($batchOperating) ? 0 : max($batchOperating);
+                            } else {
+                                $time = $responseData['time'];
 
-                            $currentOperating = $time['operating'];
+                                $currentOperating = $time['operating'];
+                            }
 
                             $previousOperating = $this->cache->get($keyOperating) ?? 0;
 
