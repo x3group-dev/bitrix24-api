@@ -449,8 +449,15 @@ class ApiClient
 
     public function getListFast(string $method, array $params = []): Generator
     {
-        $params['order']['id'] = 'ASC';
-        $params['filter']['>ID'] = 0;
+        $id = 'ID';
+
+        switch ($method) {
+            case 'crm.item.list':
+                $id = 'id';
+        }
+
+        $params['order'][$id] = 'ASC';
+        $params['filter'][">{$id}"] = 0;
         $params['start'] = -1;
 
         if (isset($params['FILTER']) && is_array($params['FILTER']) && count($params['FILTER']) > 0) {
@@ -487,7 +494,7 @@ class ApiClient
                 break;
             }
 
-            $params['filter']['>ID'] = $result->getResponseData()->getResult()->getResultData()[$resultCounter - 1]['ID'];
+            $params['filter'][">{$id}"] = $result->getResponseData()->getResult()->getResultData()[$resultCounter - 1]["{$id}"];
         } while (true);
     }
 
