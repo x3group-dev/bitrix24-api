@@ -245,8 +245,8 @@ class ApiClient
                             if ($diff > 0) {
                                 $possibleRps = ((self::OPERATING_LIMIT - $previousOperating) / $diff) / self::OPERATING_RESET_PERIOD;
                                 $nextUsleep = (self::ONE_SECOND / $possibleRps) * 1000 * 1000;
-                                $nextUsleep = (int) $nextUsleep;
-                                $ttl = (int) round(self::ONE_SECOND / $possibleRps) + self::ONE_SECOND;
+                                $nextUsleep = (int)$nextUsleep;
+                                $ttl = (int)round(self::ONE_SECOND / $possibleRps) + self::ONE_SECOND;
 
                                 $this->cache->set($keyUsleep, $nextUsleep, $ttl);
                             }
@@ -413,6 +413,16 @@ class ApiClient
             )
         );
 
+        $this->config->getLogger()->info(
+            sprintf('request.start %s', 'get new access token'),
+            [
+                'grant_type' => 'refresh_token',
+                'client_id' => $this->config->getApplicationConfig()->getClientId(),
+                'client_secret' => $this->config->getApplicationConfig()->getClientSecret(),
+                'refresh_token' => $this->config->getCredential()->getRefreshToken(),
+            ]
+        );
+
         $requestOptions = [
             'headers' => $this->getRequestDefaultHeaders(),
         ];
@@ -422,6 +432,10 @@ class ApiClient
             switch ($response->getStatusCode()) {
                 case 200:
                     $result = $response->toArray(false);
+                    $this->config->getLogger()->info(
+                        sprintf('request.data %s', 'get new access token'),
+                        $result
+                    );
                     $this->config->getCredential()->setFromArray($result);
                     if (is_callable($this->accessTokenRefreshCallback)) {
                         $callback = $this->accessTokenRefreshCallback;
@@ -429,14 +443,18 @@ class ApiClient
                     }
                     break;
                 case 500:
+                    $this->config->getLogger()->info('getNewToken: 500 internal error');
                     throw new ServerInternalError('getNewToken: 500 internal error');
                 case 401:
+                    $this->config->getLogger()->info('refresh token expired');
                     throw new ExpiredRefreshToken('refresh token expired');
                 default:
+                    $this->config->getLogger()->info('unknown error');
                     throw new ExpiredRefreshToken('unknown error');
             }
         } catch (TransportExceptionInterface $e) {
             if (!is_null($this->config->getLogger())) {
+                $this->config->getLogger()->info($e->getMessage());
                 $this->getLogger()->error($e);
             }
         }
