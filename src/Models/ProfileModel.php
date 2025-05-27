@@ -32,7 +32,7 @@ class ProfileModel extends AbstractModel implements HasIdInterface
             ->setPersonalGender($profile['PERSONAL_GENDER'])
             ->setPersonalPhoto($profile['PERSONAL_PHOTO'] ?? '')
             ->setTimeZone($profile['TIME_ZONE'])
-            ->setTimeZoneOffset($profile['TIME_ZONE_OFFSET']);
+            ->setTimeZoneOffset($profile['TIME_ZONE_OFFSET'] ?? 0);
 
         return $model;
     }
