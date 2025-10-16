@@ -328,6 +328,10 @@ class ApiClient
                         throw new ApplicationNotInstalled();
                     }
 
+                    if ($body['error'] === 'authorization_error' && $body['error_description'] === 'Unable to authorize user') {
+                        throw new ApplicationNotInstalled();
+                    }
+
                     break;
                 case 403:
                     if (!is_null($this->config->getLogger())) {
