@@ -94,7 +94,7 @@ use Psr\SimpleCache\CacheInterface;
 
 class ApiClient
 {
-    protected const BITRIX24_OAUTH_SERVER_URL = 'https://oauth.bitrix.info';
+    protected const BITRIX24_OAUTH_SERVER_URL = 'https://oauth.bitrix.tech';
     protected const CLIENT_VERSION = '1.0.0';
     protected const CLIENT_USER_AGENT = 'bitrix24-api';
 
