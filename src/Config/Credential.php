@@ -235,8 +235,8 @@ Array
 (
     [access_token] => f9b8f361005924e600005bb4000000030000034de68362375794e2ce7193cbf08c71ae
     [expires] => 1643362553
-    [domain] => oauth.bitrix.tech
-    [server_endpoint] => https://oauth.bitrix.tech/rest/
+    [domain] => oauth.bitrix24.tech
+    [server_endpoint] => https://oauth.bitrix24.tech/rest/
     [client_endpoint] => https://altasib.bitrix24.ru/rest/
     [member_id] => d8ec73f4795c05836fdc9f52588fca4d
     [user_id] => 3
