@@ -621,7 +621,8 @@ class ApiClient
             );
 
             $start = $params['start'] ?? 0;
-            $resultCounter = count($result->getResponseData()->getResult()->getResultData());
+            $resultData = $result->getResponseData()->getResult()->getResultData();
+            $resultCounter = count($resultData);
             $totalCounter += $resultCounter;
             if (!is_null($this->config->getLogger())) {
                 $this->config->getLogger()->debug(
@@ -630,13 +631,18 @@ class ApiClient
                 );
             }
 
-            yield $result;
-
-            if ($resultCounter < 50) {
+            if ($resultCounter === 0) {
                 break;
             }
 
-            $params['filter'][">{$id}"] = $result->getResponseData()->getResult()->getResultData()[$resultCounter - 1]["{$id}"];
+            yield $result;
+
+            $lastItem = end($resultData);
+            if (!is_array($lastItem) || !array_key_exists($id, $lastItem)) {
+                break;
+            }
+
+            $params['filter'][">{$id}"] = $lastItem[$id];
         } while (true);
     }
 
