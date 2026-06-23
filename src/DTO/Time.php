@@ -8,6 +8,8 @@ class Time
     protected float $finish;
     protected float $duration;
     protected float $processing;
+    protected float $operating;
+    protected ?int $operatingResetAt;
     protected \DateTimeImmutable $dateStart;
     protected \DateTimeImmutable $dateFinish;
 
@@ -26,6 +28,8 @@ class Time
         float              $finish,
         float              $duration,
         float              $processing,
+        float              $operating,
+        ?int               $operatingResetAt,
         \DateTimeImmutable $dateStart,
         \DateTimeImmutable $dateFinish
     )
@@ -34,6 +38,8 @@ class Time
         $this->finish = $finish;
         $this->duration = $duration;
         $this->processing = $processing;
+        $this->operating = $operating;
+        $this->operatingResetAt = $operatingResetAt;
         $this->dateStart = $dateStart;
         $this->dateFinish = $dateFinish;
     }
@@ -51,6 +57,8 @@ class Time
             (float)$response['finish'],
             (float)$response['duration'],
             (float)$response['processing'],
+            (float)($response['operating'] ?? 0),
+            isset($response['operating_reset_at']) ? (int)$response['operating_reset_at'] : null,
             new \DateTimeImmutable($response['date_start']),
             new \DateTimeImmutable($response['date_finish'])
         );
@@ -86,6 +94,16 @@ class Time
     public function getProcessing(): float
     {
         return $this->processing;
+    }
+
+    public function getOperating(): float
+    {
+        return $this->operating;
+    }
+
+    public function getOperatingResetAt(): ?int
+    {
+        return $this->operatingResetAt;
     }
 
     /**

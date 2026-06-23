@@ -79,7 +79,6 @@ use Bitrix24Api\Exceptions\ApiException;
 use Bitrix24Api\Exceptions\ApplicationNotInstalled;
 use Bitrix24Api\Exceptions\ExpiredRefreshToken;
 use Bitrix24Api\Exceptions\InvalidArgumentException;
-use Bitrix24Api\Exceptions\OperationTimeLimitExceeded;
 use Bitrix24Api\Exceptions\ServerInternalError;
 use Exception;
 use Generator;
@@ -108,6 +107,7 @@ class ApiClient
     protected string $typeTransport = 'json';
     protected ?CacheInterface $cache;
     private $accessTokenRefreshCallback;
+    private array $previousOperatingByMethod = [];
 
 
     public function __construct(Config $config = null, ?CacheInterface $cache = null)
@@ -220,6 +220,8 @@ class ApiClient
             switch ($request->getStatusCode()) {
                 case 200:
                     $responseData = $request->toArray(false);
+
+                    $this->delayIfNextRequestMayExceedOperatingLimit($method, $responseData);
 
                     if ($this->cache && isset($responseData['time']['operating'])) {
                         $keyOperating = sprintf(
@@ -364,13 +366,17 @@ class ApiClient
                             $operatingResetAt = time() + self::OPERATING_RESET_PERIOD;
                         }
 
-                        throw new OperationTimeLimitExceeded(
+                        $this->delayForOperatingReset(
                             method: $method,
                             operatingResetAt: $operatingResetAt,
-                            message: (string)$body['error'],
-                            description: (string)($body['error_description'] ?? ''),
-                            responseBody: $body,
+                            context: [
+                                'httpStatus' => $request->getStatusCode(),
+                                'body' => $body,
+                            ]
                         );
+
+                        $response = $this->request($method, $params);
+                        break;
                     }
 
                     throw new ApiException(
@@ -425,6 +431,74 @@ class ApiClient
         }
 
         return $response;
+    }
+
+    private function delayIfNextRequestMayExceedOperatingLimit(string $method, array $responseData): void
+    {
+        if (!isset($responseData['time']['operating'], $responseData['time']['operating_reset_at'])) {
+            return;
+        }
+
+        $currentOperating = $this->getCurrentOperating($method, $responseData);
+        $previousOperating = $this->previousOperatingByMethod[$method] ?? null;
+        $this->previousOperatingByMethod[$method] = $currentOperating;
+
+        if ($previousOperating === null) {
+            return;
+        }
+
+        $operatingDiff = $currentOperating - $previousOperating;
+        if ($operatingDiff <= 0) {
+            return;
+        }
+
+        if (($currentOperating + $operatingDiff) < self::OPERATING_LIMIT) {
+            return;
+        }
+
+        $operatingResetAt = (int)$responseData['time']['operating_reset_at'];
+        $this->delayForOperatingReset(
+            method: $method,
+            operatingResetAt: $operatingResetAt,
+            context: [
+                'operating' => $currentOperating,
+                'previous_operating' => $previousOperating,
+                'predicted_next_operating' => $currentOperating + $operatingDiff,
+            ]
+        );
+        $this->previousOperatingByMethod[$method] = 0;
+    }
+
+    private function delayForOperatingReset(string $method, int $operatingResetAt, array $context = []): void
+    {
+        $delaySeconds = max(1, $operatingResetAt - time());
+
+        if (!is_null($this->config->getLogger())) {
+            $this->config->getLogger()->warning(
+                'request.delayed_by_operating_limit',
+                array_merge(
+                    [
+                        'apiMethod' => $method,
+                        'operating_reset_at' => $operatingResetAt,
+                        'delay_seconds' => $delaySeconds,
+                    ],
+                    $context
+                )
+            );
+        }
+
+        sleep($delaySeconds);
+    }
+
+    private function getCurrentOperating(string $method, array $responseData): float
+    {
+        if ($method === 'batch') {
+            $batchOperating = array_column($responseData['result']['result_time'] ?? [], 'operating');
+
+            return empty($batchOperating) ? 0 : max($batchOperating);
+        }
+
+        return (float)$responseData['time']['operating'];
     }
 
     protected function getRequestDefaultHeaders(): array
