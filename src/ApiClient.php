@@ -107,6 +107,7 @@ class ApiClient
     protected string $typeTransport = 'json';
     protected ?CacheInterface $cache;
     private $accessTokenRefreshCallback;
+    private $operatingLimitDelayCallback;
     private array $previousOperatingByMethod = [];
 
 
@@ -130,6 +131,13 @@ class ApiClient
     public function onAccessTokenRefresh(callable $callback): self
     {
         $this->accessTokenRefreshCallback = $callback;
+
+        return $this;
+    }
+
+    public function onOperatingLimitDelay(callable $callback): self
+    {
+        $this->operatingLimitDelayCallback = $callback;
 
         return $this;
     }
@@ -472,6 +480,10 @@ class ApiClient
     private function delayForOperatingReset(string $method, int $operatingResetAt, array $context = []): void
     {
         $delaySeconds = max(1, $operatingResetAt - time());
+        if (is_callable($this->operatingLimitDelayCallback)) {
+            $callback = $this->operatingLimitDelayCallback;
+            $callback($method, $operatingResetAt, $delaySeconds, $context);
+        }
 
         if (!is_null($this->config->getLogger())) {
             $this->config->getLogger()->warning(
