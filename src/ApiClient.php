@@ -79,6 +79,7 @@ use Bitrix24Api\Exceptions\ApiException;
 use Bitrix24Api\Exceptions\ApplicationNotInstalled;
 use Bitrix24Api\Exceptions\ExpiredRefreshToken;
 use Bitrix24Api\Exceptions\InvalidArgumentException;
+use Bitrix24Api\Exceptions\OperationTimeLimitExceeded;
 use Bitrix24Api\Exceptions\ServerInternalError;
 use Exception;
 use Generator;
@@ -344,6 +345,39 @@ class ApiClient
                         );
                     }
                     throw new ApplicationNotInstalled();
+                case 429:
+                    $body = $request->toArray(false);
+                    if (!is_null($this->config->getLogger())) {
+                        $this->config->getLogger()->debug(
+                            sprintf('request.end %s', $method),
+                            [
+                                'apiMethod' => $method,
+                                'httpStatus' => $request->getStatusCode(),
+                                'body' => $body,
+                            ]
+                        );
+                    }
+
+                    if (($body['error'] ?? null) === 'OPERATION_TIME_LIMIT') {
+                        $operatingResetAt = (int)($body['time']['operating_reset_at'] ?? 0);
+                        if ($operatingResetAt <= 0) {
+                            $operatingResetAt = time() + self::OPERATING_RESET_PERIOD;
+                        }
+
+                        throw new OperationTimeLimitExceeded(
+                            method: $method,
+                            operatingResetAt: $operatingResetAt,
+                            message: (string)$body['error'],
+                            description: (string)($body['error_description'] ?? ''),
+                            responseBody: $body,
+                        );
+                    }
+
+                    throw new ApiException(
+                        (string)($body['error'] ?? 'HTTP_429'),
+                        429,
+                        (string)($body['error_description'] ?? '')
+                    );
                 case 500:
                     if (!is_null($this->config->getLogger())) {
                         $this->config->getLogger()->debug(
