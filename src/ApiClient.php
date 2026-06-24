@@ -482,7 +482,9 @@ class ApiClient
         $delaySeconds = max(1, $operatingResetAt - time());
         if (is_callable($this->operatingLimitDelayCallback)) {
             $callback = $this->operatingLimitDelayCallback;
-            $callback($method, $operatingResetAt, $delaySeconds, $context);
+            $callback($method, $operatingResetAt, $delaySeconds, array_merge($context, [
+                'event' => 'waiting',
+            ]));
         }
 
         if (!is_null($this->config->getLogger())) {
@@ -500,6 +502,13 @@ class ApiClient
         }
 
         sleep($delaySeconds);
+
+        if (is_callable($this->operatingLimitDelayCallback)) {
+            $callback = $this->operatingLimitDelayCallback;
+            $callback($method, $operatingResetAt, 0, array_merge($context, [
+                'event' => 'resumed',
+            ]));
+        }
     }
 
     private function getCurrentOperating(string $method, array $responseData): float
