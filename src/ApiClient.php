@@ -374,7 +374,7 @@ class ApiClient
                             $operatingResetAt = time() + self::OPERATING_RESET_PERIOD;
                         }
 
-                        $this->delayForOperatingReset(
+                        $this->throwOperatingLimit(
                             method: $method,
                             operatingResetAt: $operatingResetAt,
                             context: [
@@ -382,9 +382,6 @@ class ApiClient
                                 'body' => $body,
                             ]
                         );
-
-                        $response = $this->request($method, $params);
-                        break;
                     }
 
                     throw new ApiException(
@@ -465,7 +462,7 @@ class ApiClient
         }
 
         $operatingResetAt = (int)$responseData['time']['operating_reset_at'];
-        $this->delayForOperatingReset(
+        $this->throwOperatingLimit(
             method: $method,
             operatingResetAt: $operatingResetAt,
             context: [
@@ -474,22 +471,21 @@ class ApiClient
                 'predicted_next_operating' => $currentOperating + $operatingDiff,
             ]
         );
-        $this->previousOperatingByMethod[$method] = 0;
     }
 
-    private function delayForOperatingReset(string $method, int $operatingResetAt, array $context = []): void
+    /**
+     * Прерываем выполнение при достижении operating-лимита Bitrix24.
+     * НЕ спим внутри процесса (это блокировало воркер и оставляло задачи-сироты).
+     * Вместо этого бросаем исключение — вызывающий код (job) отложит выполнение
+     * через release() до operating_reset_at, освободив воркер.
+     */
+    private function throwOperatingLimit(string $method, int $operatingResetAt, array $context = []): void
     {
         $delaySeconds = max(1, $operatingResetAt - time());
-        if (is_callable($this->operatingLimitDelayCallback)) {
-            $callback = $this->operatingLimitDelayCallback;
-            $callback($method, $operatingResetAt, $delaySeconds, array_merge($context, [
-                'event' => 'waiting',
-            ]));
-        }
 
         if (!is_null($this->config->getLogger())) {
             $this->config->getLogger()->warning(
-                'request.delayed_by_operating_limit',
+                'request.operating_limit_reached',
                 array_merge(
                     [
                         'apiMethod' => $method,
@@ -501,14 +497,10 @@ class ApiClient
             );
         }
 
-        sleep($delaySeconds);
-
-        if (is_callable($this->operatingLimitDelayCallback)) {
-            $callback = $this->operatingLimitDelayCallback;
-            $callback($method, $operatingResetAt, 0, array_merge($context, [
-                'event' => 'resumed',
-            ]));
-        }
+        throw new \Bitrix24Api\Exceptions\OperationTimeLimitExceeded(
+            method: $method,
+            operatingResetAt: $operatingResetAt,
+        );
     }
 
     private function getCurrentOperating(string $method, array $responseData): float
