@@ -98,6 +98,15 @@ class ApiClient
     protected const CLIENT_VERSION = '1.0.0';
     protected const CLIENT_USER_AGENT = 'bitrix24-api';
 
+    /**
+     * Таймаут ожидания активности от портала, в секундах. Отсчёт идёт и на стадии
+     * установки соединения, поэтому это же значение ограничивает подвисание на
+     * недоступном IP портала (например, когда в DNS осталась мёртвая A-запись).
+     * Без него берётся default_socket_timeout = 60 с, и веб-запрос успевает
+     * получить 504 от nginx раньше, чем клиент вернёт ошибку.
+     */
+    protected const HTTP_TIMEOUT = 30.0;
+
     protected const OPERATING_LIMIT = 480;
     protected const OPERATING_RESET_PERIOD = 600;
     protected const ONE_SECOND = 1;
@@ -111,10 +120,13 @@ class ApiClient
     private array $previousOperatingByMethod = [];
 
 
-    public function __construct(Config $config = null, ?CacheInterface $cache = null)
+    public function __construct(Config $config = null, ?CacheInterface $cache = null, ?float $httpTimeout = null)
     {
         $this->config = $config;
-        $this->httpClient = HttpClient::create(['http_version' => '2.0']);
+        $this->httpClient = HttpClient::create([
+            'http_version' => '2.0',
+            'timeout' => null !== $httpTimeout && $httpTimeout > 0 ? $httpTimeout : self::HTTP_TIMEOUT,
+        ]);
         $this->cache = $cache;
     }
 
