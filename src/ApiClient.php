@@ -228,7 +228,11 @@ class ApiClient
                     'usleep',
                 );
 
-                $usleep = $this->cache->get($keyUsleep);
+                // Кеш Laravel на драйвере redis отдаёт числа СТРОКОЙ, а файл объявлен
+                // strict_types: usleep('123') бросает TypeError, запрос падает и
+                // вызывающий код теряет задачу. Каст заодно отсекает отрицательную
+                // паузу, которую формула даёт при исчерпанном бюджете.
+                $usleep = (int) $this->cache->get($keyUsleep);
 
                 if ($usleep > 0) {
                     usleep($usleep);
@@ -261,7 +265,7 @@ class ApiClient
                                 $currentOperating = $time['operating'];
                             }
 
-                            $previousOperating = $this->cache->get($keyOperating) ?? 0;
+                            $previousOperating = (float) ($this->cache->get($keyOperating) ?? 0);
 
                             $diff = $currentOperating - $previousOperating;
 
@@ -445,6 +449,23 @@ class ApiClient
             if (!is_null($this->config->getLogger())) {
                 $this->config->getLogger()->error($e->getMessage());
             }
+
+            throw new ApiException(
+                sprintf('%s: транспортная ошибка — %s', $method, $e->getMessage()),
+                0,
+                '',
+                $e
+            );
+        }
+
+        // Необработанный статус оставлял $response равным null, и вызывающий код падал
+        // на ->getResponseData() уже вне запроса: \Error вместо исключения и без указания
+        // на метод, который не ответил.
+        if ($response === null) {
+            throw new ApiException(
+                sprintf('%s: Битрикс ответил HTTP %d без разобранного тела', $method, $request->getStatusCode()),
+                $request->getStatusCode()
+            );
         }
 
         return $response;

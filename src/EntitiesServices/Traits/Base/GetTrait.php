@@ -14,7 +14,9 @@ trait GetTrait
             $response = $this->api->request(sprintf($this->getMethod(), 'get'), ['id' => $id]);
             return new $class($response->getResponseData()->getResult()->getResultData());
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            // Исходное исключение часто с пустым сообщением: без класса и previous
+            // в логе оставалась запись «Ошибка при получении лида: ""» без причины.
+            throw new \Exception($e->getMessage() !== '' ? $e->getMessage() : $e::class, $e->getCode(), $e);
         }
     }
 }
