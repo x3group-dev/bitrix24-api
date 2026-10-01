@@ -27,7 +27,7 @@ class ProfileModel extends AbstractModel implements HasIdInterface
         $model = new self($profile);
         $model->setId($profile['ID'])
             ->setAdmin($profile['ADMIN'])
-            ->setName($profile['NAME'])
+            ->setName($profile['NAME'] ?? '')
             ->setLastName($profile['LAST_NAME'] ?? '')
             ->setPersonalGender($profile['PERSONAL_GENDER'])
             ->setPersonalPhoto($profile['PERSONAL_PHOTO'] ?? '')
